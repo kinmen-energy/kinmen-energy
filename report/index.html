@@ -14,25 +14,25 @@
   *{box-sizing:border-box;margin:0;padding:0}
   html{-webkit-print-color-adjust:exact;print-color-adjust:exact}
   body{font-family:"Noto Sans TC","PingFang TC","Microsoft JhengHei",system-ui,sans-serif;
-    background:#e6ecec;color:var(--ink);line-height:1.55;padding:24px 12px}
+    background:#e6ecec;color:var(--ink);line-height:1.7;padding:24px 12px;font-size:17px}
   .sheet{max-width:820px;margin:0 auto;background:var(--paper);border-radius:8px;
     box-shadow:0 6px 30px rgba(10,50,50,.14);overflow:hidden;padding:26px 30px 0}
 
   /* 抬頭 */
   .rhead{display:flex;align-items:flex-start;gap:16px;position:relative}
   .rhead .t{flex:1}
-  .rhead h1{font-size:27px;font-weight:900;color:var(--teal-dd);letter-spacing:.02em}
-  .rhead .meta{margin-top:8px;color:var(--teal-d);font-size:15px;font-weight:600;line-height:1.9}
+  .rhead h1{font-size:30px;font-weight:900;color:var(--teal-dd);letter-spacing:.02em}
+  .rhead .meta{margin-top:8px;color:var(--teal-d);font-size:17px;font-weight:600;line-height:1.9}
   .rhead .mascot{width:92px;height:92px;flex:none;border-radius:50%;overflow:hidden;
     display:flex;align-items:center;justify-content:center;box-shadow:0 2px 8px rgba(20,60,60,.12)}
   .hr{height:5px;background:var(--teal);border-radius:3px;margin:14px 0 20px}
 
   /* 標籤頁 */
   .tab{display:inline-block;background:var(--teal);color:#fff;font-weight:800;
-    padding:6px 22px;border-radius:9px;font-size:16px;letter-spacing:.06em;box-shadow:0 2px 0 rgba(0,0,0,.08)}
+    padding:7px 24px;border-radius:9px;font-size:18px;letter-spacing:.06em;box-shadow:0 2px 0 rgba(0,0,0,.08)}
   .tab.yellow{background:var(--yellow);color:#5a4a00}
-  .tab.sm{font-size:14px;padding:5px 16px}
-  .note{display:inline-block;color:var(--red);font-size:12.5px;margin-left:10px;vertical-align:middle}
+  .tab.sm{font-size:16px;padding:5px 16px}
+  .note{display:inline-block;color:var(--red);font-size:14px;margin-left:10px;vertical-align:middle}
 
   /* 版面格 */
   .grid{display:grid;grid-template-columns:1.15fr .85fr;gap:18px}
@@ -46,34 +46,34 @@
   .tile.issue .ic{background:#fdeae7;color:var(--red)}
   .tile.ok .ic{background:#e7f4ec;color:var(--good)}
   .tile.info .ic{background:var(--teal-l);color:var(--teal-d)}
-  .tile .cap{font-size:12.5px;font-weight:700;line-height:1.25}
+  .tile .cap{font-size:14.5px;font-weight:700;line-height:1.25}
   .tile.issue .cap{color:var(--red)} .tile.ok .cap{color:var(--good)}
-  .tile .sub{font-size:11px;color:var(--ink-soft)}
+  .tile .sub{font-size:12.5px;color:var(--ink-soft)}
 
   /* 照度場域列 */
   .lux-scale{display:flex;align-items:center;justify-content:space-between;gap:6px;margin:6px 4px 0}
   .lux-node{flex:1;text-align:center}
   .lux-node .dot{width:44px;height:44px;border-radius:50%;margin:0 auto 4px;display:flex;align-items:center;justify-content:center;color:#fff}
-  .lux-node .nm{font-size:12px;font-weight:700}
-  .lux-node .lx{font-size:11px;color:var(--ink-soft)}
+  .lux-node .nm{font-size:14px;font-weight:700}
+  .lux-node .lx{font-size:12.5px;color:var(--ink-soft)}
 
   /* 處方雙欄 */
   .rx{margin:10px 0 0;display:grid;grid-template-columns:1fr 1fr;gap:26px}
   .rx .col{padding:0}
-  .rx .ch{display:block;text-align:center;font-size:17px;font-weight:900;letter-spacing:.14em;
+  .rx .ch{display:block;text-align:center;font-size:19px;font-weight:900;letter-spacing:.14em;
     background:var(--yellow);border-radius:22px;padding:7px 0;margin-bottom:14px;
     box-shadow:0 2px 0 rgba(0,0,0,.06)}
   .ch.self{color:var(--orange)} .ch.pro{color:var(--red)}
   .rx ul{list-style:none;padding:0 6px}
-  .rx li{display:flex;gap:9px;align-items:flex-start;padding:6px 0;font-size:14.5px}
+  .rx li{display:flex;gap:9px;align-items:flex-start;padding:7px 0;font-size:16.5px}
   .rx li .bul{color:var(--ink);font-weight:900;line-height:1.45;flex:none}
   .rx li.urgent .bul{color:var(--red)}
   .rx li .bang{color:var(--red);font-weight:900}
-  .empty{color:var(--ink-soft);font-size:13px;text-align:center;padding:6px}
+  .empty{color:var(--ink-soft);font-size:14.5px;text-align:center;padding:6px}
 
   /* 底列 */
-  .foot{background:var(--teal);color:#fff;margin:22px -30px 0;padding:13px 30px;
-    display:flex;align-items:center;justify-content:center;gap:30px;font-size:14px;font-weight:700}
+  .foot{background:var(--teal);color:#fff;margin:22px -30px 0;padding:14px 30px;
+    display:flex;align-items:center;justify-content:center;gap:30px;font-size:16px;font-weight:700}
   .foot .it{display:flex;align-items:center;gap:8px}
   .foot .ver{opacity:.7;font-weight:400;font-size:11px;margin-left:auto}
 
