@@ -235,15 +235,15 @@
     <!-- 右欄 -->
     <div class="rail">
       <section class="card weather">
-        <div class="hd"><h2>金門今日天氣</h2><div class="sub">金城 · 資料時間 --:--</div></div>
+        <div class="hd"><h2>金門今日天氣</h2><div class="sub" id="wxSub">資料載入中…</div></div>
         <div class="body">
           <div class="sun"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4 12H2M22 12h-2M5 5l1.5 1.5M17.5 17.5 19 19M19 5l-1.5 1.5M6.5 17.5 5 19"/></svg></div>
-          <div class="temp">—<span style="font-size:24px">°C</span></div>
-          <div class="cond">— · 待接氣象署資料</div>
+          <div class="temp"><span id="wxTemp">—</span><span style="font-size:24px">°C</span></div>
+          <div class="cond" id="wxCond">載入中…</div>
           <div class="meta">
-            <div><b>—</b>最高</div><div><b>—</b>最低</div><div><b>—%</b>濕度</div><div><b>—</b>風速</div>
+            <div><b id="wxFeels">—</b>體感</div><div><b id="wxPop">—</b>降雨</div><div><b id="wxHum">—</b>濕度</div><div><b id="wxWind">—</b>風速</div>
           </div>
-          <div class="notice">＊示範版位，之後接中央氣象署開放資料 API 顯示即時天氣。</div>
+          <div class="notice" id="wxNote">＊資料來源：中央氣象署開放資料。</div>
         </div>
       </section>
 
@@ -329,6 +329,29 @@ const NEWS=[
 document.getElementById('newsList').innerHTML = NEWS.map(n=>
   `<a class="item" href="#"><div class="date"><b>${n.d}</b>${n.m}</div><div class="txt">${n.t}</div></a>`
 ).join('');
+
+/* ── 即時天氣（透過 Apps Script 天氣端點，JSONP）── */
+const WEATHER_API = "https://script.google.com/macros/s/AKfycbwH976MlJsdmnY2toxw0-J7xKVz-xMwgZPZI858bhvgnh9qpZi9WzhoWXmf0MxGhLa2/exec";
+function setWx(id,v,suffix){ const el=document.getElementById(id); if(el) el.textContent=(v==null||v==='—')?'—':v+(suffix||''); }
+window.__onWeather=function(w){
+  if(!w||w.error){ document.getElementById('wxSub').textContent='天氣暫時無法取得';
+    if(w&&w.error) document.getElementById('wxNote').textContent='＊'+w.error; return; }
+  setWx('wxTemp', w.temp);
+  document.getElementById('wxCond').textContent = w.condition||'—';
+  setWx('wxFeels', w.feels, '°');
+  setWx('wxPop', w.pop, '%');
+  setWx('wxHum', w.humidity, '%');
+  setWx('wxWind', w.wind);
+  const time = (w.time||'').replace('T',' ').slice(0,16);
+  document.getElementById('wxSub').textContent = (w.town||'金門') + (time?' · '+time:'');
+};
+(function loadWeather(){
+  if(!WEATHER_API){ document.getElementById('wxSub').textContent='未設定天氣來源'; return; }
+  const s=document.createElement('script');
+  s.src=WEATHER_API+(WEATHER_API.indexOf('?')>-1?'&':'?')+'weather=1&callback=__onWeather';
+  s.onerror=()=>{ document.getElementById('wxSub').textContent='天氣連線失敗'; };
+  document.body.appendChild(s);
+})();
 </script>
 </body>
 </html>
