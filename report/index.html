@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>金門縣居家用電健診書</title>
+<style>
+  :root{
+    --teal-900:#0a565e; --teal-700:#0d7079; --teal-500:#17a2ad; --teal-100:#dceef0;
+    --stone:#e9dcc4; --stone-line:#cbb98f; --paper:#faf7f0; --ink:#20302f; --ink-soft:#5f6f6d;
+    --orange:#ef7f1a;
+    --good:#2f9e5f; --good-bg:#e6f4ec;
+    --amber:#dd9524; --amber-bg:#fbf1dd;
+    --alert:#d5452f; --alert-bg:#fbe6e1;
+    --shadow:0 2px 14px rgba(20,60,60,.08);
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  body{font-family:"Noto Sans TC","PingFang TC","Microsoft JhengHei",system-ui,sans-serif;
+    background:#e6ecec;color:var(--ink);line-height:1.6;padding:24px 12px}
+  .sheet{max-width:840px;margin:0 auto;background:var(--paper);
+    box-shadow:0 6px 30px rgba(10,50,50,.14);border-radius:6px;overflow:hidden}
+  .head{background:linear-gradient(135deg,var(--teal-900),var(--teal-700));
+    color:#fff;padding:26px 30px;display:flex;align-items:center;gap:22px;position:relative}
+  .head::after{content:"";position:absolute;left:0;right:0;bottom:0;height:4px;
+    background:linear-gradient(90deg,var(--orange),#f6b352)}
+  .head .title-wrap{flex:1}
+  .eyebrow{font-size:12px;letter-spacing:.32em;opacity:.85;font-weight:500}
+  .head h1{font-size:30px;font-weight:800;letter-spacing:.06em;margin:2px 0 4px}
+  .head .org{font-size:13px;opacity:.9}
+  .seal{width:96px;height:96px;flex:none;border-radius:50%;background:var(--stone);
+    border:3px solid var(--stone-line);display:flex;align-items:center;justify-content:center;
+    box-shadow:inset 0 0 0 4px rgba(255,255,255,.35)}
+  .meta-row{display:flex;flex-wrap:wrap;border-bottom:1px solid #ece4d3;background:#fff}
+  .meta-row .cell{flex:1;min-width:130px;padding:12px 20px;border-right:1px solid #f0ece0}
+  .meta-row .cell:last-child{border-right:none}
+  .meta-row .k{font-size:11px;color:var(--ink-soft);letter-spacing:.1em}
+  .meta-row .v{font-size:16px;font-weight:700;margin-top:2px}
+  .body{padding:24px 30px 8px}
+  .verdict{display:flex;gap:20px;align-items:stretch;margin-bottom:22px}
+  .verdict .face-card{flex:none;width:150px;background:#fff;border-radius:16px;box-shadow:var(--shadow);
+    padding:16px;text-align:center;border:1px solid #eee6d6}
+  .verdict .face-card .lbl{font-size:12px;color:var(--ink-soft);letter-spacing:.12em}
+  .verdict .face-card .fv{font-size:17px;font-weight:800;margin-top:6px}
+  .verdict .compare{flex:1;background:#fff;border-radius:16px;box-shadow:var(--shadow);
+    padding:18px 20px;border:1px solid #eee6d6}
+  .verdict .compare h3{font-size:14px;color:var(--teal-900);letter-spacing:.1em;margin-bottom:14px;
+    display:flex;align-items:center;gap:8px}
+  .cmp-bar{margin:10px 0}
+  .cmp-bar .cl{display:flex;justify-content:space-between;font-size:13px;margin-bottom:4px}
+  .cmp-bar .track{height:16px;border-radius:8px;background:#eef1f0;overflow:hidden}
+  .cmp-bar .fill{height:100%;border-radius:8px}
+  .callout{margin-top:12px;font-size:14px;font-weight:700;padding:5px 12px;border-radius:20px;display:inline-block}
+  .kpis{display:flex;gap:12px;margin-bottom:26px}
+  .kpi{flex:1;background:#fff;border-radius:14px;box-shadow:var(--shadow);padding:14px 12px;text-align:center;border:1px solid #eee6d6}
+  .kpi .n{font-size:30px;font-weight:800;line-height:1}
+  .kpi .l{font-size:12px;color:var(--ink-soft);margin-top:5px;letter-spacing:.06em}
+  .kpi.alert .n{color:var(--alert)} .kpi.teal .n{color:var(--teal-700)} .kpi.orange .n{color:var(--orange)}
+  .dept{margin-bottom:24px}
+  .dept-head{display:flex;align-items:center;gap:10px;margin-bottom:12px;padding-bottom:8px;border-bottom:2px solid var(--teal-100)}
+  .dept-head .ico{width:34px;height:34px;border-radius:9px;background:var(--teal-100);display:flex;align-items:center;justify-content:center;flex:none}
+  .dept-head h2{font-size:17px;font-weight:800;letter-spacing:.06em;color:var(--teal-900)}
+  .dept-head .tag{margin-left:auto;font-size:11px;color:var(--ink-soft);letter-spacing:.14em}
+  .lux-row{display:flex;align-items:center;gap:14px;margin:12px 0}
+  .lux-row .zn{width:52px;font-weight:700;font-size:14px;flex:none}
+  .lux-bar{flex:1;position:relative;height:22px;background:#eef1f0;border-radius:6px}
+  .lux-band{position:absolute;top:0;bottom:0;background:var(--good-bg);border-left:2px dashed var(--good);border-right:2px dashed var(--good);border-radius:2px}
+  .lux-mark{position:absolute;top:-4px;bottom:-4px;width:3px;border-radius:2px}
+  .lux-val{width:130px;flex:none;font-size:13px;text-align:right}
+  .lux-val .st{font-weight:700}
+  .chips{display:flex;flex-wrap:wrap;gap:10px}
+  .chip{display:flex;align-items:center;gap:9px;padding:9px 13px;border-radius:12px;font-size:13.5px;font-weight:600;border:1px solid transparent}
+  .chip.red{background:var(--alert-bg);color:#9a2c1c;border-color:#f0c4ba}
+  .chip.amber{background:var(--amber-bg);color:#8a5a10;border-color:#efd8a8}
+  .chip.green{background:var(--good-bg);color:#1f6e42;border-color:#bfe2cd}
+  .chip .ci{width:18px;height:18px;flex:none} .chip .bang{font-weight:900;color:var(--alert)}
+  .empty{font-size:13px;color:var(--ink-soft);padding:4px 0}
+  .reading{margin-top:12px;background:#fff;border:1px solid #eee6d6;border-radius:12px;padding:10px 14px;display:flex;align-items:center;gap:16px;font-size:13.5px;box-shadow:var(--shadow);flex-wrap:wrap}
+  .reading .rv{display:flex;flex-direction:column}
+  .reading .rv b{font-size:18px} .reading .rv span{font-size:11px;color:var(--ink-soft)}
+  .reading .verdict-pill{margin-left:auto;font-weight:700;padding:5px 12px;border-radius:20px;font-size:13px}
+  .rx{background:#fff;border-radius:16px;box-shadow:var(--shadow);border:1px solid #eee6d6;overflow:hidden;margin-bottom:8px}
+  .rx-head{background:var(--teal-900);color:#fff;padding:12px 20px;display:flex;align-items:center;gap:10px}
+  .rx-head h2{font-size:16px;letter-spacing:.14em;font-weight:800}
+  .rx-head .sub{font-size:12px;opacity:.8;margin-left:auto}
+  .rx-cols{display:flex}
+  .rx-col{flex:1;padding:16px 20px}
+  .rx-col:first-child{border-right:1px dashed #e0d9c8}
+  .rx-col .ch{font-size:14px;font-weight:800;letter-spacing:.1em;margin-bottom:12px;display:flex;align-items:center;gap:8px}
+  .rx-col.self .ch{color:var(--orange)} .rx-col.pro .ch{color:var(--teal-700)}
+  .rx-item{display:flex;gap:10px;padding:9px 0;border-bottom:1px solid #f4efe2;font-size:14px}
+  .rx-item:last-child{border-bottom:none}
+  .rx-item .dot{width:7px;height:7px;border-radius:50%;margin-top:8px;flex:none}
+  .self .dot{background:var(--orange)} .pro .dot{background:var(--teal-500)}
+  .rx-item.urgent{background:var(--alert-bg);margin:0 -20px;padding:9px 20px;border-bottom:none}
+  .rx-item.urgent .dot{background:var(--alert)}
+  .rx-item .bang{color:var(--alert);font-weight:900;margin-right:2px}
+  .rx-item .src{font-size:11px;color:var(--ink-soft);margin-left:4px}
+  .foot{background:var(--teal-900);color:#fff;padding:14px 30px;display:flex;align-items:center;gap:16px;font-size:12.5px;letter-spacing:.04em;margin-top:16px}
+  .foot .ph{margin-left:auto;font-weight:700} .foot .ver{opacity:.7}
+  .printbtn{position:fixed;top:18px;right:18px;z-index:10;background:var(--orange);color:#fff;border:none;padding:11px 18px;border-radius:24px;font-size:14px;font-weight:700;cursor:pointer;box-shadow:0 4px 14px rgba(239,127,26,.4);font-family:inherit}
+  .state{max-width:840px;margin:60px auto;text-align:center;color:var(--ink-soft);font-size:15px}
+  .banner{max-width:840px;margin:0 auto 10px;background:#fff8e6;border:1px solid #f0dca0;color:#8a6a10;
+    padding:8px 14px;border-radius:8px;font-size:13px}
+  @media (max-width:640px){
+    .verdict{flex-direction:column} .verdict .face-card{width:100%}
+    .kpis{flex-wrap:wrap} .kpi{min-width:calc(50% - 6px)}
+    .rx-cols{flex-direction:column} .rx-col:first-child{border-right:none;border-bottom:1px dashed #e0d9c8}
+    .head{flex-direction:column;text-align:center} .head .title-wrap{order:2}
+  }
+  @media print{ body{background:#fff;padding:0} .sheet{box-shadow:none;max-width:none} .printbtn,.banner{display:none} .dept,.rx,.verdict{break-inside:avoid} }
+</style>
+</head>
+<body>
+<button class="printbtn" onclick="window.print()">🖨 列印 / 存成 PDF</button>
+<div id="banner"></div>
+<div class="sheet" id="sheet"><div class="state">載入中…</div></div>
+
+<script>
+/* ============================================================
+   report_template.html — 資料與版型分離
+   資料：由網址 ?id=xxx 透過 JSONP 向 doGet Web App 抓取
+   版型：以下全部；改 icon/背景/配色/排版只需改這份，系統不動
+   ============================================================ */
+
+/* ★★ 部署後把 doGet 的 /exec 網址貼在這裡 ★★ */
+const API_BASE = "";   // 例：https://script.google.com/macros/s/AKfy..../exec
+
+/* ── SVG 圖示（要換成你自己的 icon，改這裡即可）── */
+const I = {
+  seal:`<svg width="70" height="70" viewBox="0 0 70 70" fill="none" stroke="#0a565e" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M18 22c-4-2-6 3-3 6M52 22c4-2 6 3 3 6"/><path d="M14 34c0-13 9-20 21-20s21 7 21 20c0 15-11 22-21 22s-21-7-21-22z"/><circle cx="27" cy="32" r="3.2" fill="#0a565e" stroke="none"/><circle cx="43" cy="32" r="3.2" fill="#0a565e" stroke="none"/><path d="M31 40c2 2 6 2 8 0"/><path d="M35 34v3"/><path d="M20 48c3 4 8 6 15 6s12-2 15-6"/></svg>`,
+  smile:`<svg width="58" height="58" viewBox="0 0 58 58" fill="none" stroke="#2f9e5f" stroke-width="3.4" stroke-linecap="round"><circle cx="29" cy="29" r="24"/><circle cx="21" cy="24" r="2.6" fill="#2f9e5f" stroke="none"/><circle cx="37" cy="24" r="2.6" fill="#2f9e5f" stroke="none"/><path d="M19 35c3 5 17 5 20 0"/></svg>`,
+  cry:`<svg width="58" height="58" viewBox="0 0 58 58" fill="none" stroke="#d5452f" stroke-width="3.4" stroke-linecap="round"><circle cx="29" cy="29" r="24"/><circle cx="21" cy="24" r="2.6" fill="#d5452f" stroke="none"/><circle cx="37" cy="24" r="2.6" fill="#d5452f" stroke="none"/><path d="M19 39c3-5 17-5 20 0"/></svg>`,
+  bulb:`<svg class="ci" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18h6M10 21h4M12 3a6 6 0 0 0-4 10.5c.8.7 1 1.2 1 2.5h6c0-1.3.2-1.8 1-2.5A6 6 0 0 0 12 3z"/></svg>`,
+  ac:`<svg class="ci" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="8" rx="2"/><path d="M6 16v1M10 16c0 2-1 2-1 3M14 16c0 2 1 2 1 3M18 16v1"/></svg>`,
+  fridge:`<svg class="ci" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="2" width="12" height="20" rx="2"/><path d="M6 10h12M10 5v2M10 13v3"/></svg>`,
+  warn:`<svg class="ci" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 2 20h20L12 3z"/><path d="M12 10v4M12 17h.01"/></svg>`,
+  thermo:`<svg class="ci" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3a2 2 0 0 0-2 2v9a4 4 0 1 0 4 0V5a2 2 0 0 0-2-2z"/></svg>`,
+  plug:`<svg class="ci" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 2v6M15 2v6M6 8h12v3a6 6 0 0 1-12 0V8zM12 17v5"/></svg>`,
+  timer:`<svg class="ci" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="13" r="8"/><path d="M12 13V9M9 2h6"/></svg>`
+};
+const iconFor = (name)=>({
+  "冷氣太髒":I.filter||I.ac,"冷氣太舊":I.ac,"冷氣適溫":I.thermo,"冷氣檢修":I.warn,
+  "冰箱太舊":I.fridge,"膠條老化":I.fridge,"膠條檢修":I.warn,"冰箱太滿":I.fridge,
+  "電熱水器":I.timer,"待機電力":I.plug,"照度不足":I.bulb
+}[name]||I.warn);
+
+const esc = s => String(s==null?"":s).replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]));
+
+/* ── 主渲染：吃一包 result_json ── */
+function renderReport(D){
+  const b=D.basic||{}, e=D.electricity, det=D.detail||{}, F=D.findings||[];
+  const challenge=F.filter(f=>f.category==="challenge");
+  const rescue=F.filter(f=>f.category==="rescue");
+  const urgent=F.filter(f=>f.priority==="urgent");
+  const urgentFirst=(a,b)=>(b.priority==="urgent")-(a.priority==="urgent");
+
+  const luxBar=z=>{
+    const scaleMax=Math.max(z.max*1.4,(z.measured||0)*1.15,1);
+    const pct=v=>Math.min(100,(v/scaleMax)*100);
+    const col=z.status==="正常"?"var(--good)":"var(--alert)";
+    return `<div class="lux-row"><div class="zn">${esc(z.zone)}</div>
+      <div class="lux-bar"><div class="lux-band" style="left:${pct(z.min)}%;right:${100-pct(z.max)}%"></div>
+      <div class="lux-mark" style="left:${pct(z.measured)}%;background:${col}"></div></div>
+      <div class="lux-val"><b>${z.measured}</b> Lux　<span class="st" style="color:${col}">${esc(z.status)}</span></div></div>`;
+  };
+  const chip=f=>{
+    const tone=f.priority==="urgent"?"red":(f.status&&f.status.indexOf("正常")>-1?"green":"amber");
+    const bang=f.priority==="urgent"?'<span class="bang">❗</span>':'';
+    return `<div class="chip ${tone}">${iconFor(f.icon)}${bang}<span>${esc(f.status)}</span></div>`;
+  };
+  const chipsOr=(arr,emptyTxt)=> arr.length?`<div class="chips">${arr.map(chip).join("")}</div>`:`<div class="empty">${emptyTxt}</div>`;
+  const pill=st=>{const m={"正常":["var(--good)","var(--good-bg)"],"注意":["var(--amber)","var(--amber-bg)"],"異常":["var(--alert)","var(--alert-bg)"]};const[c,bg]=m[st]||m["異常"];return `<span class="verdict-pill" style="color:${c};background:${bg}">${esc(st)}</span>`;};
+  const dept=(title,ico,tag,inner)=>`<section class="dept"><div class="dept-head"><div class="ico" style="color:var(--teal-700)">${ico}</div><h2>${title}</h2><div class="tag">${tag}</div></div>${inner}</section>`;
+  const rxItem=(f,cls)=>{const u=f.priority==="urgent";return `<div class="rx-item ${u?'urgent':''} ${cls}"><span class="dot"></span><div>${u?'<span class="bang">❗</span>':''}${esc(f.message)}<span class="src">— ${esc(f.domain)}·${esc(f.item)}</span></div></div>`;};
+
+  /* 電費總評 */
+  let verdictHtml="";
+  if(e){
+    const peerMax=Math.max(e.kwh_current,e.kwh_peer_avg,1);
+    const smile=e.face==="smile";
+    verdictHtml=`<div class="verdict">
+      <div class="face-card"><div class="lbl">風獅爺總評</div><div style="margin:10px 0">${smile?I.smile:I.cry}</div>
+        <div class="fv" style="color:${smile?'var(--good)':'var(--alert)'}">${smile?'優於同儕':'高於同儕'}</div></div>
+      <div class="compare"><h3>${I.thermo}　本期用電 vs 同棟大樓平均</h3>
+        <div class="cmp-bar"><div class="cl"><span>本期用電</span><b>${e.kwh_current} 度</b></div>
+          <div class="track"><div class="fill" style="width:${(e.kwh_current/peerMax*100).toFixed(0)}%;background:${smile?'var(--good)':'var(--alert)'}"></div></div></div>
+        <div class="cmp-bar"><div class="cl"><span>同棟大樓平均</span><b>${e.kwh_peer_avg} 度</b></div>
+          <div class="track"><div class="fill" style="width:100%;background:#b9c4c2"></div></div></div>
+        <div class="callout" style="color:${smile?'var(--good)':'var(--alert)'};background:${smile?'var(--good-bg)':'var(--alert-bg)'}">
+          ${smile?'↓ 低於平均 '+e.peer_gap_kwh+' 度':'↑ 高於平均，仍有節電空間'}</div></div></div>`;
+  }
+
+  /* 冷氣熱像讀值 */
+  const air=det.aircon_thermal;
+  const airReading=air?`<div class="reading">${I.thermo}
+    <div class="rv"><b>${air.return_temp}°C</b><span>回風(室內)</span></div>
+    <div class="rv"><b>${air.supply_temp}°C</b><span>出風</span></div>
+    <div class="rv"><b>${air.diff}°C</b><span>溫差</span></div>${pill(air.status)}</div>
+    <div style="font-size:12.5px;color:var(--ink-soft);margin-top:8px">${esc(air.message)}</div>`
+    :`<div class="empty">冷氣溫差未量測</div>`;
+
+  /* 冰箱膠條讀值（分類型）*/
+  const fri=det.fridge_thermal;
+  const friReading=fri?`<div class="reading">${I.thermo}
+    <div class="rv"><b style="font-size:14px">${esc(fri.choice||fri.status)}</b><span>膠條熱像</span></div>${pill(fri.status)}
+    <div style="font-size:12.5px;color:var(--ink-soft);margin-left:4px">${esc(fri.message)}</div></div>`
+    :`<div class="empty">冰箱膠條未量測</div>`;
+
+  const acChips=F.filter(f=>f.domain==="冷氣"&&f.item.indexOf("熱像")<0);
+  const friChips=F.filter(f=>f.domain==="冰箱"&&f.item.indexOf("熱像")<0);
+  const safety=F.filter(f=>f.domain==="其他"||f.domain==="熱水器"||f.domain==="現場");
+
+  const html=`
+  <div class="head"><div class="seal">${I.seal}</div>
+    <div class="title-wrap"><div class="eyebrow">KINMEN HOME ENERGY CHECK-UP</div>
+      <h1>居家用電健診書</h1><div class="org">金門縣 · 住商節電專案辦公室</div></div></div>
+  <div class="meta-row">
+    <div class="cell"><div class="k">住戶姓名</div><div class="v">${esc(b.resident_name)}</div></div>
+    <div class="cell"><div class="k">房屋類型</div><div class="v">${esc(b.house_type)}</div></div>
+    <div class="cell"><div class="k">診斷日期</div><div class="v">${esc(b.inspect_date)}</div></div>
+    <div class="cell"><div class="k">健檢人員</div><div class="v">${esc(b.inspector)}</div></div></div>
+  <div class="body">
+    ${verdictHtml}
+    <div class="kpis">
+      <div class="kpi teal"><div class="n">${F.length}</div><div class="l">建議項目</div></div>
+      <div class="kpi orange"><div class="n">${challenge.length}</div><div class="l">我來挑戰</div></div>
+      <div class="kpi teal"><div class="n">${rescue.length}</div><div class="l">召喚救援</div></div>
+      <div class="kpi alert"><div class="n">${urgent.length}</div><div class="l">❗ 優先處理</div></div></div>
+    ${det.illuminance?dept("照明科",I.bulb,"CNS 12112 · 場域照度",
+      det.illuminance.map(luxBar).join("")+`<div style="font-size:12px;color:var(--ink-soft);margin-top:6px">綠色區間為建議照度；標記落在區間外即為照度不足或過高。</div>`):""}
+    ${dept("冷氣科",I.ac,"設備盤查 + 熱像量測",chipsOr(acChips,"冷氣無待改善項目")+airReading)}
+    ${dept("冰箱科",I.fridge,"設備盤查 + 膠條熱像",chipsOr(friChips,"冰箱無待改善項目")+friReading)}
+    ${dept("安全 / 其他",I.warn,"現場檢測 · 熱水器 · 待機電力",chipsOr(safety,"無其他待改善項目"))}
+    <div class="rx"><div class="rx-head">${I.thermo}<h2>診斷處方箋</h2><span class="sub">❗ 為安全相關，請優先處理</span></div>
+      <div class="rx-cols">
+        <div class="rx-col self"><div class="ch">${I.bulb}　我來挑戰（自我療護）</div>
+          ${challenge.length?challenge.sort(urgentFirst).map(f=>rxItem(f,"self")).join(""):'<div class="empty">此次無自我療護項目</div>'}</div>
+        <div class="rx-col pro"><div class="ch">${I.warn}　召喚救援（專業會診）</div>
+          ${rescue.length?rescue.sort(urgentFirst).map(f=>rxItem(f,"pro")).join(""):'<div class="empty">此次無專業會診項目</div>'}</div></div></div>
+  </div>
+  <div class="foot"><span>住商節電專案辦公室</span><span class="ver">rule_version ${esc(D.rule_version)}</span><span class="ph">☎ 082-321635</span></div>`;
+
+  document.getElementById("sheet").innerHTML=html;
+}
+
+/* ── 資料載入：?id= → JSONP 抓 doGet；無 id 或未設 API → 顯示範例 ── */
+const SAMPLE={rule_version:"1.1.0",basic:{resident_name:"（範例）張可樂",house_type:"透天厝",inspect_date:"2027-03-15",inspector:"住商節電團隊"},
+  electricity:{face:"smile",kwh_current:213,kwh_peer_avg:454,peer_gap_kwh:241},
+  detail:{illuminance:[{zone:"客廳",measured:120,min:150,max:300,status:"照度不足"},{zone:"廚房",measured:300,min:200,max:500,status:"正常"},{zone:"廁所",measured:40,min:50,max:100,status:"照度不足"}],
+    aircon_thermal:{return_temp:27,supply_temp:19,diff:8,status:"異常",message:"溫差≤10°C，建議清洗濾網或安排冷氣檢修。"},
+    fridge_thermal:{choice:"異常：局部溫差超過3°C",status:"異常",message:"建議更換膠條或請專業人員檢修。"}},
+  findings:[{domain:"照度",item:"客廳（照度不足）",icon:"照度不足",status:"照度不足",message:"更換LED燈具，省電又省錢。",category:"rescue",priority:"normal"},
+    {domain:"冷氣",item:"能源效率",icon:"冷氣太舊",status:"機齡過舊",message:"汰換成能源效率標示一級產品。",category:"rescue",priority:"normal"},
+    {domain:"冷氣",item:"熱像儀溫差",icon:"冷氣檢修",status:"異常",message:"溫差≤10°C，建議清洗濾網或安排冷氣檢修。",category:"rescue",priority:"urgent"},
+    {domain:"冰箱",item:"食物裝滿程度",icon:"冰箱太滿",status:"裝載過滿",message:"建議冰箱八分滿。",category:"challenge",priority:"normal"},
+    {domain:"現場",item:"待機電力",icon:"待機電力",status:"待機電力偏高",message:"不使用的電器關閉電源或加裝定時器。",category:"challenge",priority:"normal"}]};
+
+function getParam(n){return new URLSearchParams(location.search).get(n);}
+function showBanner(t){document.getElementById("banner").innerHTML=`<div class="banner">${t}</div>`;}
+function showError(t){document.getElementById("sheet").innerHTML=`<div class="state">⚠ ${esc(t||'載入失敗')}<br><small>請確認網址 id 與 API_BASE 設定，或稍後再試。</small></div>`;}
+
+window.__onReport=function(data){
+  if(!data||data.error){showError(data&&data.error);return;}
+  renderReport(data);
+};
+
+(function load(){
+  const token=getParam("token");
+  if(!API_BASE||!token){
+    renderReport(SAMPLE);
+    showBanner(!API_BASE?"⚙ 目前顯示範例資料（尚未設定 API_BASE）。設定後以網址 ?token=xxxx 開啟即讀真實資料。":"顯示範例資料：網址未帶 ?token=");
+    return;
+  }
+  const s=document.createElement("script");
+  s.src=API_BASE+(API_BASE.indexOf("?")>-1?"&":"?")+"token="+encodeURIComponent(token)+"&callback=__onReport";
+  s.onerror=()=>showError("無法連線資料服務（API_BASE 或權限設定）");
+  document.body.appendChild(s);
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>金門節能資訊平台</title>
+<style>
+  :root{
+    --teal-900:#0a565e; --teal-700:#0d7079; --teal-500:#17a2ad; --teal-100:#dceef0;
+    --paper:#f4f7f7; --ink:#20302f; --ink-soft:#5f6f6d; --orange:#ef7f1a;
+    --card:#fff; --line:#e3e9e9; --shadow:0 3px 16px rgba(20,60,60,.08);
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:"Noto Sans TC","PingFang TC","Microsoft JhengHei",system-ui,sans-serif;
+    background:var(--paper);color:var(--ink);line-height:1.6;min-height:100vh}
+  .top{background:linear-gradient(135deg,var(--teal-900),var(--teal-700));color:#fff;
+    padding:34px 24px 30px;position:relative}
+  .top::after{content:"";position:absolute;left:0;right:0;bottom:0;height:4px;
+    background:linear-gradient(90deg,var(--orange),#f6b352)}
+  .top .wrap{max-width:1040px;margin:0 auto;display:flex;align-items:center;gap:18px}
+  .logo{width:60px;height:60px;border-radius:14px;background:rgba(255,255,255,.14);
+    display:flex;align-items:center;justify-content:center;flex:none}
+  .top h1{font-size:26px;font-weight:800;letter-spacing:.06em}
+  .top .sub{font-size:13px;opacity:.85;letter-spacing:.14em;margin-top:2px}
+  .main{max-width:1040px;margin:0 auto;padding:30px 24px 60px}
+  .section-label{font-size:13px;color:var(--ink-soft);letter-spacing:.16em;
+    margin:8px 0 16px;font-weight:600}
+  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:18px}
+  .tile{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:22px;
+    box-shadow:var(--shadow);text-decoration:none;color:inherit;display:flex;flex-direction:column;
+    gap:12px;transition:transform .12s,box-shadow .12s;position:relative;min-height:170px}
+  .tile.active:hover{transform:translateY(-3px);box-shadow:0 8px 26px rgba(20,60,60,.14)}
+  .tile.soon{opacity:.62;cursor:default}
+  .tile .ic{width:48px;height:48px;border-radius:12px;background:var(--teal-100);
+    display:flex;align-items:center;justify-content:center;color:var(--teal-700)}
+  .tile h3{font-size:17px;font-weight:800;letter-spacing:.03em}
+  .tile p{font-size:13px;color:var(--ink-soft);flex:1}
+  .tile .go{font-size:13px;font-weight:700;color:var(--orange);display:flex;align-items:center;gap:4px}
+  .badge{position:absolute;top:16px;right:16px;font-size:11px;font-weight:700;
+    padding:3px 10px;border-radius:20px;letter-spacing:.08em}
+  .badge.on{background:#e6f4ec;color:#1f6e42}
+  .badge.wip{background:#fbf1dd;color:#8a5a10}
+  .foot{max-width:1040px;margin:0 auto;padding:0 24px 40px;color:var(--ink-soft);font-size:12.5px}
+  @media(max-width:520px){.top h1{font-size:22px}}
+</style>
+</head>
+<body>
+<div class="top"><div class="wrap">
+  <div class="logo">
+    <svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M13 2 3 14h7l-1 8 10-12h-7l1-8z"/></svg>
+  </div>
+  <div><h1>金門節能資訊平台</h1><div class="sub">KINMEN ENERGY SERVICES · 住商節電專案辦公室</div></div>
+</div></div>
+
+<div class="main">
+  <div class="section-label">功能選單</div>
+  <div class="grid">
+
+    <!-- 功能 1：居家用電健檢報告（已上線）-->
+    <a class="tile active" href="./report/">
+      <span class="badge on">已上線</span>
+      <div class="ic"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18h6M10 21h4M12 3a6 6 0 0 0-4 10.5c.8.7 1 1.2 1 2.5h6c0-1.3.2-1.8 1-2.5A6 6 0 0 0 12 3z"/></svg></div>
+      <h3>居家用電健檢報告</h3>
+      <p>輸入報告鑰匙（token）查看該戶健診書，含照度、冷氣、冰箱、處方箋。</p>
+      <span class="go">開啟 →</span>
+    </a>
+
+    <!-- 功能 2：健檢名冊 / 總覽（預留）-->
+    <div class="tile soon">
+      <span class="badge wip">開發中</span>
+      <div class="ic"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18M3 12h18M3 18h18"/></svg></div>
+      <h3>健檢名冊總覽</h3>
+      <p>承辦端檢視所有住戶健檢統計、快速進入各戶報告（需管理權限）。</p>
+      <span class="go" style="color:var(--ink-soft)">敬請期待</span>
+    </div>
+
+    <!-- 功能 3：統計儀表板（預留）-->
+    <div class="tile soon">
+      <span class="badge wip">開發中</span>
+      <div class="ic"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg></div>
+      <h3>節能成效儀表板</h3>
+      <p>彙整各戶用電同儕比較、常見問題分布、改善建議統計圖表。</p>
+      <span class="go" style="color:var(--ink-soft)">敬請期待</span>
+    </div>
+
+    <!-- 功能 4：預留 -->
+    <div class="tile soon">
+      <span class="badge wip">規劃中</span>
+      <div class="ic"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg></div>
+      <h3>更多功能</h3>
+      <p>此平台可持續擴充，未來功能將陸續加入此處。</p>
+      <span class="go" style="color:var(--ink-soft)">—</span>
+    </div>
+
+  </div>
+</div>
+
+<div class="foot">住商節電專案辦公室 · ☎ 082-321635</div>
+</body>
+</html>
