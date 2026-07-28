@@ -3,248 +3,123 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>金門縣居家節能診斷報告</title>
+<title>金門縣居家用電健檢</title>
 <style>
   :root{
     --teal:#1aa1ac; --teal-d:#0d7079; --teal-dd:#0a565e; --teal-l:#e5f3f4;
-    --yellow:#f4c81e; --orange:#ef7f1a; --red:#e0392a; --good:#2f9e5f;
-    --ink:#20302f; --ink-soft:#5f6f6d; --paper:#fff; --line:#e3e9e9;
+    --orange:#ef7f1a; --ink:#20302f; --ink-soft:#5f6f6d; --line:#e3e9e9;
     --shadow:0 3px 16px rgba(20,60,60,.09);
   }
   *{box-sizing:border-box;margin:0;padding:0}
-  html{-webkit-print-color-adjust:exact;print-color-adjust:exact}
   body{font-family:"Noto Sans TC","PingFang TC","Microsoft JhengHei",system-ui,sans-serif;
-    background:#e6ecec;color:var(--ink);line-height:1.7;padding:24px 12px;font-size:17px}
-  .sheet{max-width:820px;margin:0 auto;background:var(--paper);border-radius:8px;
-    box-shadow:0 6px 30px rgba(10,50,50,.14);overflow:hidden;padding:26px 30px 0}
-
-  /* 抬頭 */
-  .rhead{display:flex;align-items:flex-start;gap:16px;position:relative}
-  .rhead .t{flex:1}
-  .rhead h1{font-size:30px;font-weight:900;color:var(--teal-dd);letter-spacing:.02em}
-  .rhead .meta{margin-top:8px;color:var(--teal-d);font-size:17px;font-weight:600;line-height:1.9}
-  .rhead .mascot{width:92px;height:92px;flex:none;border-radius:50%;overflow:hidden;
-    display:flex;align-items:center;justify-content:center;box-shadow:0 2px 8px rgba(20,60,60,.12)}
-  .hr{height:5px;background:var(--teal);border-radius:3px;margin:14px 0 20px}
-
-  /* 標籤頁 */
-  .tab{display:inline-block;background:var(--teal);color:#fff;font-weight:800;
-    padding:7px 24px;border-radius:9px;font-size:18px;letter-spacing:.06em;box-shadow:0 2px 0 rgba(0,0,0,.08)}
-  .tab.yellow{background:var(--yellow);color:#5a4a00}
-  .tab.sm{font-size:16px;padding:5px 16px}
-  .note{display:inline-block;color:var(--red);font-size:14px;margin-left:10px;vertical-align:middle}
-
-  /* 版面格 */
-  .grid{display:grid;grid-template-columns:1.15fr .85fr;gap:18px}
-  .block{margin-bottom:4px}
-  .box{border:2.5px solid var(--teal);border-radius:16px;padding:14px 12px;margin-top:10px;min-height:110px}
-
-  /* 圖示磚 */
-  .tiles{display:flex;flex-wrap:wrap;gap:6px;justify-content:center}
-  .tile{width:92px;display:flex;flex-direction:column;align-items:center;gap:5px;padding:6px 2px;text-align:center}
-  .tile .ic{width:56px;height:56px;border-radius:14px;display:flex;align-items:center;justify-content:center}
-  .tile.issue .ic{background:#fdeae7;color:var(--red)}
-  .tile.ok .ic{background:#e7f4ec;color:var(--good)}
-  .tile.info .ic{background:var(--teal-l);color:var(--teal-d)}
-  .tile .cap{font-size:14.5px;font-weight:700;line-height:1.25}
-  .tile.issue .cap{color:var(--red)} .tile.ok .cap{color:var(--good)}
-  .tile .sub{font-size:12.5px;color:var(--ink-soft)}
-
-  /* 照度場域列 */
-  .lux-scale{display:flex;align-items:center;justify-content:space-between;gap:6px;margin:6px 4px 0}
-  .lux-node{flex:1;text-align:center}
-  .lux-node .dot{width:44px;height:44px;border-radius:50%;margin:0 auto 4px;display:flex;align-items:center;justify-content:center;color:#fff}
-  .lux-node .nm{font-size:14px;font-weight:700}
-  .lux-node .lx{font-size:12.5px;color:var(--ink-soft)}
-
-  /* 處方雙欄 */
-  .rx{margin:10px 0 0;display:grid;grid-template-columns:1fr 1fr;gap:26px}
-  .rx .col{padding:0}
-  .rx .ch{display:block;text-align:center;font-size:19px;font-weight:900;letter-spacing:.14em;
-    background:var(--yellow);border-radius:22px;padding:7px 0;margin-bottom:14px;
-    box-shadow:0 2px 0 rgba(0,0,0,.06)}
-  .ch.self{color:var(--orange)} .ch.pro{color:var(--red)}
-  .rx ul{list-style:none;padding:0 6px}
-  .rx li{display:flex;gap:9px;align-items:flex-start;padding:7px 0;font-size:16.5px}
-  .rx li .bul{color:var(--ink);font-weight:900;line-height:1.45;flex:none}
-  .rx li.urgent .bul{color:var(--red)}
-  .rx li .bang{color:var(--red);font-weight:900}
-  .empty{color:var(--ink-soft);font-size:14.5px;text-align:center;padding:6px}
-
-  /* 底列 */
-  .foot{background:var(--teal);color:#fff;margin:22px -30px 0;padding:14px 30px;
-    display:flex;align-items:center;justify-content:center;gap:30px;font-size:16px;font-weight:700}
-  .foot .it{display:flex;align-items:center;gap:8px}
-  .foot .ver{opacity:.7;font-weight:400;font-size:11px;margin-left:auto}
-
-  .printbtn{position:fixed;top:18px;right:18px;z-index:10;background:var(--orange);color:#fff;border:none;
-    padding:11px 18px;border-radius:24px;font-size:14px;font-weight:700;cursor:pointer;
-    box-shadow:0 4px 14px rgba(239,127,26,.4);font-family:inherit}
-  .banner{max-width:820px;margin:0 auto 10px;background:#fff8e6;border:1px solid #f0dca0;color:#8a6a10;padding:8px 14px;border-radius:8px;font-size:13px}
-  .state{max-width:820px;margin:60px auto;text-align:center;color:var(--ink-soft)}
-
-  @media(max-width:680px){ .grid{grid-template-columns:1fr} .rx{grid-template-columns:1fr}
-    .rx .col:first-child{border-right:none;border-bottom:1px dashed #d8d2c2;padding-bottom:12px}
-    .rhead h1{font-size:22px} }
-  @media print{ body{background:#fff;padding:0} .sheet{box-shadow:none;max-width:none} .printbtn,.banner{display:none}
-    .block,.box,.rx{break-inside:avoid} }
+    background:#eef3f3;color:var(--ink);line-height:1.75;font-size:17px;min-height:100vh}
+  .top{background:linear-gradient(135deg,var(--teal-dd),var(--teal-d));color:#fff;padding:22px 20px;position:relative}
+  .top::after{content:"";position:absolute;left:0;right:0;bottom:0;height:4px;background:linear-gradient(90deg,var(--orange),#f6b352)}
+  .top .wrap{max-width:760px;margin:0 auto;display:flex;align-items:center;gap:14px}
+  .top .back{color:#fff;text-decoration:none;font-size:15px;opacity:.9}
+  .top h1{font-size:22px;font-weight:800;letter-spacing:.04em}
+  .main{max-width:760px;margin:0 auto;padding:30px 20px 60px}
+  .lead{text-align:center;margin-bottom:26px}
+  .lead .mascot{width:96px;height:96px;border-radius:50%;overflow:hidden;margin:0 auto 12px;box-shadow:var(--shadow)}
+  .lead .mascot img{width:100%;height:100%;object-fit:cover}
+  .lead h2{font-size:24px;font-weight:800;color:var(--teal-dd)}
+  .lead p{font-size:17px;color:var(--ink-soft);margin-top:6px}
+  .cards{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+  .entry{background:#fff;border:1px solid var(--line);border-radius:20px;padding:28px 24px;box-shadow:var(--shadow);
+    text-decoration:none;color:inherit;display:flex;flex-direction:column;align-items:center;text-align:center;gap:12px;
+    transition:transform .16s,box-shadow .16s}
+  .entry:hover{transform:translateY(-4px);box-shadow:0 10px 28px rgba(20,60,60,.16)}
+  .entry .ic{width:74px;height:74px;border-radius:18px;display:flex;align-items:center;justify-content:center}
+  .entry.fill .ic{background:#fff1e3;color:var(--orange)}
+  .entry.find .ic{background:var(--teal-l);color:var(--teal-d)}
+  .entry h3{font-size:21px;font-weight:800}
+  .entry p{font-size:15.5px;color:var(--ink-soft)}
+  .entry .btn{margin-top:6px;padding:11px 26px;border-radius:26px;font-size:17px;font-weight:800;color:#fff}
+  .entry.fill .btn{background:var(--orange)} .entry.find .btn{background:var(--teal)}
+  .lookup{background:#fff;border:1px solid var(--line);border-radius:20px;box-shadow:var(--shadow);
+    margin-top:22px;padding:24px;display:none}
+  .lookup.open{display:block}
+  .lookup h3{font-size:19px;font-weight:800;color:var(--teal-dd);margin-bottom:6px}
+  .lookup p{font-size:15px;color:var(--ink-soft);margin-bottom:14px}
+  .lookup .row{display:flex;gap:10px;flex-wrap:wrap}
+  .lookup input{flex:1;min-width:200px;font-size:18px;padding:13px 16px;border:2px solid var(--line);
+    border-radius:12px;font-family:inherit}
+  .lookup input:focus{outline:none;border-color:var(--teal)}
+  .lookup button{background:var(--teal);color:#fff;border:none;font-size:17px;font-weight:800;
+    padding:13px 28px;border-radius:12px;cursor:pointer;font-family:inherit}
+  .lookup .hint{font-size:13.5px;color:var(--ink-soft);margin-top:10px}
+  .steps{max-width:760px;margin:26px auto 0;background:#fff8ef;border:1px solid #f0dcc0;border-radius:16px;padding:18px 22px}
+  .steps h4{font-size:16px;color:#8a5a10;margin-bottom:8px}
+  .steps ol{margin-left:20px;font-size:15px;color:#7a5a2a}
+  .steps li{padding:3px 0}
+  .foot{text-align:center;color:var(--ink-soft);font-size:14px;padding:24px}
+  @media(max-width:560px){ .cards{grid-template-columns:1fr} }
 </style>
 </head>
 <body>
-<button class="printbtn" onclick="window.print()">🖨 列印 / 存成 PDF</button>
-<div id="banner"></div>
-<div class="sheet" id="sheet"><div class="state">載入中…</div></div>
-
+<div class="top"><div class="wrap">
+  <a class="back" href="../">← 返回平台</a>
+  <h1>居家用電健檢</h1>
+</div></div>
+<div class="main">
+  <div class="lead">
+    <div class="mascot"><img src="data:image/jpeg;base64,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" alt="風獅爺"></div>
+    <h2>金門縣居家用電健檢</h2>
+    <p>由住商節電專案辦公室協助，找出家中用電問題，省電又安全。</p>
+  </div>
+  <div class="cards">
+    <a class="entry fill" id="fillLink" href="#">
+      <div class="ic"><svg width="38" height="38" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16v16H4zM8 9h8M8 13h8M8 17h5"/><path d="M15 2l2 2-2 2"/></svg></div>
+      <h3>填寫健檢問卷</h3>
+      <p>健檢人員現場填寫。完成後系統會產生診斷報告。</p>
+      <span class="btn">前往填寫</span>
+    </a>
+    <div class="entry find" onclick="openLookup()" style="cursor:pointer">
+      <div class="ic"><svg width="38" height="38" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18h6M10 21h4M12 3a6 6 0 0 0-4 10.5c.8.7 1 1.2 1 2.5h6c0-1.3.2-1.8 1-2.5A6 6 0 0 0 12 3z"/></svg></div>
+      <h3>查詢我的報告</h3>
+      <p>已完成健檢者，輸入專屬鑰匙查看您的診斷報告。</p>
+      <span class="btn">查詢報告</span>
+    </div>
+  </div>
+  <div class="lookup" id="lookup">
+    <h3>輸入報告鑰匙</h3>
+    <p>請輸入健檢人員提供給您的報告鑰匙（一串英數字），或直接開啟收到的報告連結。</p>
+    <div class="row">
+      <input id="tokenInput" placeholder="貼上報告鑰匙…" autocomplete="off">
+      <button onclick="goReport()">查看報告</button>
+    </div>
+    <div class="hint">找不到鑰匙？請洽住商節電專案辦公室　☎ 082-321635</div>
+  </div>
+  <div class="steps">
+    <h4>健檢流程</h4>
+    <ol>
+      <li>健檢人員到府，現場填寫健檢問卷並量測。</li>
+      <li>系統自動判讀，產生您家的專屬診斷報告。</li>
+      <li>您會收到報告連結（含專屬鑰匙），點開即可查看改善建議。</li>
+    </ol>
+  </div>
+</div>
+<div class="foot">住商節電專案辦公室　☎ 082-321635</div>
 <script>
-/* ============================================================
-   report_template.html — 金門縣居家節能診斷報告（官方版面）
-   資料：?token= 透過 JSONP 抓 doGet；版型獨立可改
-   ============================================================ */
-const API_BASE = "";   // ★ 部署後把 doGet 的 /exec 網址貼這 ★
-
-/* 風獅爺（笑/哭）*/
-const MASCOT_URI = "data:image/jpeg;base64,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";
-const MASCOT = (smile)=>`<img src="${MASCOT_URI}" alt="風獅爺" style="width:100%;height:100%;object-fit:cover;border-radius:50%">`
-
-/* 圖示 */
-const ICO={
-  bulb:'<svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18h6M10 21h4M12 3a6 6 0 0 0-4 10.5c.8.7 1 1.2 1 2.5h6c0-1.3.2-1.8 1-2.5A6 6 0 0 0 12 3z"/></svg>',
-  filter:'<svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 5h18l-7 8v6l-4-2v-4L3 5z"/></svg>',
-  ac:'<svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="8" rx="2"/><path d="M6 16v1M10 16c0 2-1 2-1 3M14 16c0 2 1 2 1 3M18 16v1"/></svg>',
-  thermo:'<svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3a2 2 0 0 0-2 2v9a4 4 0 1 0 4 0V5a2 2 0 0 0-2-2z"/></svg>',
-  snow:'<svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v20M2 12h20M5 5l14 14M19 5 5 19"/></svg>',
-  fridge:'<svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="2" width="12" height="20" rx="2"/><path d="M6 10h12M10 5v2M10 13v3"/></svg>',
-  freezer:'<svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="16" height="16" rx="2"/><path d="M12 7v10M7 12h10M9 9l6 6M15 9l-6 6"/></svg>',
-  warn:'<svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 2 20h20L12 3z"/><path d="M12 10v4M12 17h.01"/></svg>',
-  plug:'<svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 2v6M15 2v6M6 8h12v3a6 6 0 0 1-12 0V8zM12 17v5"/></svg>',
-  timer:'<svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="13" r="8"/><path d="M12 13V9M9 2h6"/></svg>',
-  pot:'<svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 10h16v6a4 4 0 0 1-4 4H8a4 4 0 0 1-4-4v-6zM4 10l2-4h12l2 4M12 3v3"/></svg>',
-  check:'<svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>'
-};
-const iconFor=(name)=>({
-  "冷氣太髒":ICO.filter,"冷氣太舊":ICO.ac,"冷氣適溫":ICO.thermo,"冷氣檢修":ICO.warn,
-  "冰箱太舊":ICO.fridge,"膠條老化":ICO.fridge,"膠條檢修":ICO.warn,"冰箱太滿":ICO.fridge,
-  "電熱水器":ICO.timer,"待機電力":ICO.plug,"照度不足":ICO.bulb,"電鍋漏電":ICO.pot,"插座脫落":ICO.plug
-}[name]||ICO.warn);
-
-const esc=s=>String(s==null?"":s).replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]));
-
-function renderReport(D){
-  const b=D.basic||{}, e=D.electricity, det=D.detail||{}, F=D.findings||[];
-  const by=dom=>F.filter(f=>f.domain===dom);
-  const smile=!e||e.face==="smile";
-
-  /* 磚：一筆 finding → tile */
-  const tile=f=>`<div class="tile issue"><div class="ic">${iconFor(f.icon)}</div>
-     <div class="cap">${esc(f.status||f.item)}</div></div>`;
-  const okTile=txt=>`<div class="tile ok"><div class="ic">${ICO.check}</div><div class="cap">${txt}</div></div>`;
-  const tilesOf=(arr,okTxt)=> `<div class="tiles">${arr.length?arr.map(tile).join(""):okTile(okTxt||"檢查正常")}</div>`;
-
-  /* 照度場域 */
-  const zones=det.illuminance||[];
-  const luxRow = zones.length? `<div class="lux-scale">${zones.map(z=>{
-    const ok=z.status==="正常"; const col=ok?"var(--good)":"var(--red)";
-    return `<div class="lux-node"><div class="dot" style="background:${col}">${ICO.bulb}</div>
-      <div class="nm" style="color:${col}">${esc(z.zone)}</div>
-      <div class="lx">${z.measured} Lux</div>
-      <div class="lx" style="color:${col};font-weight:700">${esc(z.status)}</div></div>`;
-  }).join("")}</div>` : `<div class="empty">照度未量測</div>`;
-
-  /* 冷氣（含熱像異常一起當磚）*/
-  const acAll=by("冷氣");
-  /* 冰箱 / 冷凍櫃 */
-  const friAll=by("冰箱");
-  const freezerAll=F.filter(f=>f.domain==="冷凍櫃");
-  /* 其他：其他/熱水器/現場 */
-  const otherAll=F.filter(f=>["其他","熱水器","現場"].includes(f.domain));
-
-  /* 處方 */
-  const challenge=F.filter(f=>f.category==="challenge").sort((a,b)=>(b.priority==="urgent")-(a.priority==="urgent"));
-  const rescue=F.filter(f=>f.category==="rescue").sort((a,b)=>(b.priority==="urgent")-(a.priority==="urgent"));
-  const li=f=>`<li class="${f.priority==="urgent"?'urgent':''}"><span class="bul">${f.priority==="urgent"?'<span class="bang">❗</span>':'●'}</span><span>${esc(f.message)}</span></li>`;
-  const rxCol=(arr,cls,title)=>`<div class="col ${cls}"><div class="ch ${cls}">${title}</div>
-     ${arr.length?`<ul>${arr.map(li).join("")}</ul>`:'<div class="empty">此次無此類建議</div>'}</div>`;
-
-  const html=`
-  <div class="rhead">
-    <div class="t">
-      <h1>金門縣居家節能診斷報告</h1>
-      <div class="meta">住戶姓名：${esc(b.resident_name)}<br>房屋類型：${esc(b.house_type)}<br>診斷日期：${esc(b.inspect_date)}</div>
-    </div>
-    <div class="mascot">${MASCOT(smile)}</div>
-  </div>
-  <div class="hr"></div>
-
-  <div class="grid">
-    <!-- 左：照度 -->
-    <div class="block">
-      <span class="tab">照度</span><span class="note">紅色：照度不足或過高</span>
-      <div class="box">${luxRow}</div>
-    </div>
-    <!-- 右：冷氣 -->
-    <div class="block">
-      <span class="tab">冷氣</span>
-      <div class="box">${tilesOf(acAll,"冷氣正常")}</div>
-    </div>
-    <!-- 左：冰箱 / 冷凍櫃 -->
-    <div class="block">
-      <span class="tab sm">冰箱</span> <span class="tab sm">冷凍櫃</span>
-      <div class="box">${tilesOf(friAll,"冰箱正常")}
-        ${freezerAll.length?`<div class="tiles" style="margin-top:6px">${freezerAll.map(tile).join("")}</div>`:''}</div>
-    </div>
-    <!-- 右：其他 -->
-    <div class="block">
-      <span class="tab">其他</span>
-      <div class="box">${tilesOf(otherAll,"無其他項目")}</div>
-    </div>
-  </div>
-
-  <!-- 處方 -->
-  <div class="rx">
-    ${rxCol(challenge,"self","我來挑戰")}
-    ${rxCol(rescue,"pro","召喚救援")}
-  </div>
-
-  <div class="foot">
-    <div class="it">📍 住商節電專案辦公室</div>
-    <div class="it">☎ 082-321635</div>
-    <div class="ver">v${esc(D.rule_version||"")}</div>
-  </div>`;
-  document.getElementById("sheet").innerHTML=html;
+/* ★ Google 表單填寫網址（貼上你的表單網址）★ */
+const FORM_URL = "https://docs.google.com/forms/d/e/1FAIpQLSdMYPO2wAodyB3HU-zyuiwECasES908mF1JyyYVLo5FA8YodA/viewform";
+/* ★ 報告檢視頁位置 ★ */
+const REPORT_VIEW = "./view/";
+const fl = document.getElementById('fillLink');
+if (FORM_URL) { fl.href = FORM_URL; fl.target = "_blank"; }
+else { fl.href = "javascript:void(0)"; fl.onclick = ()=>alert('尚未設定問卷網址，請洽管理者。'); }
+function openLookup(){
+  const el = document.getElementById('lookup');
+  el.classList.add('open');
+  el.scrollIntoView({behavior:'smooth', block:'center'});
+  document.getElementById('tokenInput').focus();
 }
-
-/* ── 載入（?token= → JSONP）── */
-const SAMPLE={rule_version:"1.1.0",basic:{resident_name:"張可樂",house_type:"透天厝",inspect_date:"2027年3月15日"},
-  electricity:{face:"smile"},
-  detail:{illuminance:[{zone:"客廳",measured:120,min:150,max:300,status:"照度不足"},{zone:"廚房",measured:300,min:200,max:500,status:"正常"},{zone:"廁所",measured:40,min:50,max:100,status:"照度不足"}]},
-  findings:[
-    {domain:"冷氣",item:"清洗濾網",icon:"冷氣太髒",status:"濾網太髒",message:"清洗冷氣濾網，每週清洗1-2次。",category:"challenge",priority:"urgent"},
-    {domain:"冷氣",item:"能源效率",icon:"冷氣太舊",status:"冷氣太舊",message:"汰換成能源效率標示一級產品。",category:"rescue",priority:"normal"},
-    {domain:"冷氣",item:"適溫",icon:"冷氣適溫",status:"溫度不當",message:"建議冷氣適溫26-28度。",category:"challenge",priority:"normal"},
-    {domain:"冰箱",item:"能源效率",icon:"冰箱太舊",status:"設備老舊",message:"汰換成能源效率一級產品。",category:"rescue",priority:"normal"},
-    {domain:"冰箱",item:"膠條老化",icon:"膠條老化",status:"膠條失效",message:"建議更換門膠條。",category:"rescue",priority:"urgent"},
-    {domain:"冰箱",item:"食物裝滿",icon:"冰箱太滿",status:"容量太滿",message:"建議冰箱八分滿。",category:"challenge",priority:"normal"},
-    {domain:"現場",item:"待機電力",icon:"待機電力",status:"待機耗電",message:"數據機不用時記得拔。",category:"challenge",priority:"normal"},
-    {domain:"熱水器",item:"定時器",icon:"電熱水器",status:"可裝定時器",message:"電熱水器加裝定時器，省電又省錢。",category:"rescue",priority:"normal"}
-  ]};
-
-function getParam(n){return new URLSearchParams(location.search).get(n);}
-function showBanner(t){document.getElementById("banner").innerHTML=`<div class="banner">${t}</div>`;}
-function showError(t){document.getElementById("sheet").innerHTML=`<div class="state">⚠ ${esc(t||'載入失敗')}<br><small>請確認網址 token 與 API_BASE。</small></div>`;}
-window.__onReport=function(data){ if(!data||data.error){showError(data&&data.error);return;} renderReport(data); };
-
-(function load(){
-  const token=getParam("token");
-  if(!API_BASE||!token){
-    renderReport(SAMPLE);
-    showBanner(!API_BASE?"⚙ 範例資料（尚未設定 API_BASE）。設定後以 ?token=xxxx 開啟讀真實資料。":"範例資料：網址未帶 ?token=");
-    return;
-  }
-  const s=document.createElement("script");
-  s.src=API_BASE+(API_BASE.indexOf("?")>-1?"&":"?")+"token="+encodeURIComponent(token)+"&callback=__onReport";
-  s.onerror=()=>showError("無法連線資料服務（API_BASE 或權限）");
-  document.body.appendChild(s);
-})();
+function goReport(){
+  const t = document.getElementById('tokenInput').value.trim();
+  if(!t){ alert('請輸入報告鑰匙'); return; }
+  location.href = REPORT_VIEW + '?token=' + encodeURIComponent(t);
+}
+document.getElementById('tokenInput').addEventListener('keydown', e=>{ if(e.key==='Enter') goReport(); });
 </script>
 </body>
 </html>
