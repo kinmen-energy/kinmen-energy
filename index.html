@@ -3,360 +3,131 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>金門節能資訊平台</title>
+<title>金門縣居家用電健檢</title>
 <style>
   :root{
-    --teal-900:#0a565e; --teal-700:#0d7079; --teal-500:#17a2ad; --teal-100:#dceef0;
-    --stone:#e9dcc4; --sand:#d9a441; --paper:#eef3f3; --ink:#20302f; --ink-soft:#5f6f6d;
-    --orange:#ef7f1a; --line:#e3e9e9; --card:#fff;
-    --shadow:0 3px 16px rgba(20,60,60,.08);
-    --t-jinning:#2b9aa3; --t-jinsha:#0d7079; --t-jinhu:#e0824a; --t-jincheng:#d9a441; --t-lieyu:#7cc0a6;
-    --sidebar-w:236px; --sidebar-w-collapsed:66px;
+    --teal:#1aa1ac; --teal-d:#0d7079; --teal-dd:#0a565e; --teal-l:#e5f3f4;
+    --orange:#ef7f1a; --ink:#20302f; --ink-soft:#5f6f6d; --line:#e3e9e9;
+    --shadow:0 3px 16px rgba(20,60,60,.09);
   }
   *{box-sizing:border-box;margin:0;padding:0}
   body{font-family:"Noto Sans TC","PingFang TC","Microsoft JhengHei",system-ui,sans-serif;
-    background:var(--paper);color:var(--ink);line-height:1.75;overflow-x:hidden;font-size:17px}
-
-  /* 頂列 */
-  .topbar{height:60px;background:linear-gradient(135deg,var(--teal-900),var(--teal-700));
-    color:#fff;display:flex;align-items:center;gap:14px;padding:0 20px;position:sticky;top:0;z-index:30;
-    box-shadow:0 2px 10px rgba(10,50,50,.15)}
-  .topbar::after{content:"";position:absolute;left:0;right:0;bottom:0;height:3px;
-    background:linear-gradient(90deg,var(--orange),#f6b352)}
-  .burger{background:rgba(255,255,255,.14);border:none;color:#fff;width:38px;height:38px;
-    border-radius:9px;cursor:pointer;display:flex;align-items:center;justify-content:center;flex:none}
-  .burger:hover{background:rgba(255,255,255,.24)}
-  .brand{display:flex;align-items:center;gap:10px}
-  .brand .mark{width:34px;height:34px;border-radius:9px;background:rgba(255,255,255,.14);
-    display:flex;align-items:center;justify-content:center}
-  .brand h1{font-size:22px;font-weight:800;letter-spacing:.05em}
-  .brand .sub{font-size:12.5px;opacity:.8;letter-spacing:.16em}
-  .topbar .spacer{flex:1}
-  .demo-pill{font-size:13px;background:rgba(255,255,255,.16);padding:5px 11px;border-radius:20px;letter-spacing:.08em}
-
-  .app{display:flex;min-height:calc(100vh - 60px)}
-
-  /* 側欄 */
-  .sidebar{width:var(--sidebar-w);background:#fff;border-right:1px solid var(--line);
-    padding:16px 12px;transition:width .22s ease;flex:none;position:sticky;top:60px;height:calc(100vh - 60px)}
-  .sidebar .grp{font-size:12.5px;color:var(--ink-soft);letter-spacing:.16em;padding:10px 12px 6px;font-weight:600}
-  .nav a,.nav .navitem{display:flex;align-items:center;gap:12px;padding:13px 12px;border-radius:11px;
-    text-decoration:none;color:var(--ink);font-size:16.5px;font-weight:600;margin-bottom:3px;white-space:nowrap;
-    cursor:pointer;transition:background .15s}
-  .nav a:hover{background:var(--teal-100)}
-  .nav a.active{background:var(--teal-900);color:#fff}
-  .nav .navitem.soon{color:#a7b3b2;cursor:default}
-  .nav .ic{width:22px;height:22px;flex:none;display:flex;align-items:center;justify-content:center}
-  .nav .lbl{flex:1}
-  .nav .tag{font-size:11.5px;background:#f0ece0;color:#8a7a50;padding:2px 7px;border-radius:10px}
-  .nav a.active .tag{background:rgba(255,255,255,.2);color:#fff}
-  /* 收合狀態 */
-  .app.collapsed .sidebar{width:var(--sidebar-w-collapsed)}
-  .app.collapsed .sidebar .lbl,.app.collapsed .sidebar .tag,.app.collapsed .sidebar .grp{display:none}
-  .app.collapsed .nav a,.app.collapsed .nav .navitem{justify-content:center;padding:11px 0}
-
-  /* 主內容 */
-  .content{flex:1;padding:16px;display:grid;grid-template-columns:1fr 320px;gap:20px;align-items:start}
-  .card{background:var(--card);border:1px solid var(--line);border-radius:18px;box-shadow:var(--shadow)}
-  .card .hd{padding:16px 20px 0}
-  .card .hd h2{font-size:19px;font-weight:800;letter-spacing:.04em;color:var(--teal-900)}
-  .card .hd .sub{font-size:14px;color:var(--ink-soft);margin-top:2px}
-
-  /* 地圖卡 */
-  .mapcard .body{padding:6px 12px 12px}
-  .map-wrap{position:relative}
-  svg.kinmen{width:100%;height:auto;max-height:46vh;display:block;overflow:visible}
-  /* 讓地圖與下方統計列的左右邊界一致 */
-  .mapcard .map-wrap{margin:0}
-  .mapcard .body{padding-left:14px;padding-right:14px}
-  .region{cursor:pointer;
-    transition:transform .28s cubic-bezier(.34,1.4,.5,1), filter .28s ease, stroke-width .28s ease;
-    transform-origin:center center;transform-box:fill-box;
-    stroke:#fff;stroke-width:2.5px;
-    filter:drop-shadow(0 2px 3px rgba(10,60,60,.20));}
-  .region:hover{
-    transform:translateY(-11px) scale(1.075);
-    stroke-width:3.5px;
-    filter:
-      drop-shadow(0 14px 16px rgba(10,60,60,.32))
-      drop-shadow(0 4px 5px rgba(10,60,60,.20))
-      brightness(1.07) saturate(1.06);}
-  .region-label{font-size:15px;font-weight:800;fill:#fff;pointer-events:none;
-    paint-order:stroke;stroke:rgba(0,0,0,.12);stroke-width:.6px}
-  .marker{fill:var(--orange);stroke:#fff;stroke-width:2}
-  .marker-pulse{fill:var(--orange);opacity:.35;animation:pulse 2s ease-out infinite}
-  @keyframes pulse{0%{r:5;opacity:.4}100%{r:16;opacity:0}}
-  .tooltip{position:absolute;pointer-events:none;background:var(--teal-900);color:#fff;
-    padding:7px 11px;border-radius:8px;font-size:12.5px;opacity:0;transition:opacity .12s;
-    transform:translate(-50%,-115%);white-space:nowrap;z-index:5;box-shadow:0 4px 12px rgba(0,0,0,.2)}
-  .map-tools{display:flex;align-items:center;gap:14px;padding:2px 0 0;flex-wrap:wrap}
-  .toggle{display:flex;align-items:center;gap:7px;font-size:15px;color:var(--ink-soft);cursor:pointer}
-  .toggle input{accent-color:var(--orange);width:16px;height:16px}
-  .legend{display:flex;flex-wrap:wrap;gap:12px;padding:10px 0 0}
-  .legend .li{display:flex;align-items:center;gap:6px;font-size:14.5px}
-  .legend .sw{width:13px;height:13px;border-radius:4px}
-  .mapstats{display:flex;gap:10px;padding:10px 0 2px}
-  .mapstats .s{flex:1;background:var(--teal-100);border-radius:12px;padding:10px;text-align:center}
-  .mapstats .s .n{font-size:26px;font-weight:800;color:var(--teal-900)}
-  .mapstats .s .l{font-size:13px;color:var(--ink-soft)}
-
-  /* 右欄 */
-  .rail{display:flex;flex-direction:column;gap:20px}
-  .weather .body{padding:16px 20px 20px;text-align:center}
-  .weather .temp{font-size:58px;font-weight:800;color:var(--teal-900);line-height:1}
-  .weather .cond{font-size:16px;color:var(--ink-soft);margin-top:2px}
-  .weather .sun{width:56px;height:56px;margin:6px auto 4px;color:var(--orange)}
-  .weather .meta{display:flex;justify-content:center;gap:18px;margin-top:14px;font-size:14px;color:var(--ink-soft)}
-  .weather .meta b{color:var(--ink);font-size:14px;display:block}
-  .notice{font-size:12.5px;color:#a99;margin-top:12px}
-  .news .body{padding:6px 8px 10px}
-  .news .item{display:flex;gap:12px;padding:11px 12px;border-radius:10px;text-decoration:none;color:inherit}
-  .news .item:hover{background:var(--teal-100)}
-  .news .date{font-size:12.5px;color:var(--ink-soft);flex:none;width:44px;text-align:center;line-height:1.2}
-  .news .date b{display:block;font-size:19px;color:var(--teal-700);font-weight:800}
-  .news .txt{font-size:15.5px;font-weight:600}
-  .news .more{text-align:center;padding:8px;font-size:15px;color:var(--orange);font-weight:700;cursor:pointer}
-
-  @media(max-width:900px){
-    .content{grid-template-columns:1fr}
-    .sidebar{position:fixed;z-index:25;left:0;box-shadow:4px 0 20px rgba(0,0,0,.12);
-      transform:translateX(0);transition:transform .22s}
-    .app.collapsed .sidebar{width:var(--sidebar-w);transform:translateX(-100%)}
-    .app.collapsed .sidebar .lbl,.app.collapsed .sidebar .tag,.app.collapsed .sidebar .grp{display:block}
-    .app.collapsed .nav a,.app.collapsed .nav .navitem{justify-content:flex-start;padding:11px 12px}
-  }
+    background:#eef3f3;color:var(--ink);line-height:1.75;font-size:17px;min-height:100vh}
+  .top{background:linear-gradient(135deg,var(--teal-dd),var(--teal-d));color:#fff;padding:22px 20px;position:relative}
+  .top::after{content:"";position:absolute;left:0;right:0;bottom:0;height:4px;background:linear-gradient(90deg,var(--orange),#f6b352)}
+  .top .wrap{max-width:760px;margin:0 auto;display:flex;align-items:center;gap:14px}
+  .top .back{color:#fff;text-decoration:none;font-size:15px;opacity:.9}
+  .top h1{font-size:22px;font-weight:800;letter-spacing:.04em}
+  .main{max-width:760px;margin:0 auto;padding:30px 20px 60px}
+  .lead{text-align:center;margin-bottom:26px}
+  .lead .mascot{width:96px;height:96px;border-radius:50%;overflow:hidden;margin:0 auto 12px;box-shadow:var(--shadow)}
+  .lead .mascot img{width:100%;height:100%;object-fit:cover}
+  .lead h2{font-size:24px;font-weight:800;color:var(--teal-dd)}
+  .lead p{font-size:17px;color:var(--ink-soft);margin-top:6px}
+  .cards{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+  .entry{background:#fff;border:1px solid var(--line);border-radius:20px;padding:28px 24px;box-shadow:var(--shadow);
+    text-decoration:none;color:inherit;display:flex;flex-direction:column;align-items:center;text-align:center;gap:12px;
+    transition:transform .16s,box-shadow .16s}
+  .entry:hover{transform:translateY(-4px);box-shadow:0 10px 28px rgba(20,60,60,.16)}
+  .entry .ic{width:74px;height:74px;border-radius:18px;display:flex;align-items:center;justify-content:center}
+  .entry.fill .ic{background:#fff1e3;color:var(--orange)}
+  .entry.find .ic{background:var(--teal-l);color:var(--teal-d)}
+  .entry h3{font-size:21px;font-weight:800}
+  .entry p{font-size:15.5px;color:var(--ink-soft)}
+  .entry .btn{margin-top:6px;padding:11px 26px;border-radius:26px;font-size:17px;font-weight:800;color:#fff}
+  .entry.fill .btn{background:var(--orange)} .entry.find .btn{background:var(--teal)}
+  .lookup{background:#fff;border:1px solid var(--line);border-radius:20px;box-shadow:var(--shadow);
+    margin-top:22px;padding:24px;display:none}
+  .lookup.open{display:block}
+  .lookup h3{font-size:19px;font-weight:800;color:var(--teal-dd);margin-bottom:6px}
+  .lookup p{font-size:15px;color:var(--ink-soft);margin-bottom:14px}
+  .lookup .row{display:flex;gap:10px;flex-wrap:wrap}
+  .lookup input{flex:1;min-width:200px;font-size:18px;padding:13px 16px;border:2px solid var(--line);
+    border-radius:12px;font-family:inherit}
+  .lookup input:focus{outline:none;border-color:var(--teal)}
+  .lookup button{background:var(--teal);color:#fff;border:none;font-size:17px;font-weight:800;
+    padding:13px 28px;border-radius:12px;cursor:pointer;font-family:inherit}
+  .lookup .hint{font-size:13.5px;color:var(--ink-soft);margin-top:10px}
+  .steps{max-width:760px;margin:26px auto 0;background:#fff8ef;border:1px solid #f0dcc0;border-radius:16px;padding:18px 22px}
+  .steps h4{font-size:16px;color:#8a5a10;margin-bottom:8px}
+  .steps ol{margin-left:20px;font-size:15px;color:#7a5a2a}
+  .steps li{padding:3px 0}
+  .foot{text-align:center;color:var(--ink-soft);font-size:14px;padding:24px}
+  @media(max-width:560px){ .cards{grid-template-columns:1fr} }
 </style>
 </head>
 <body>
-
-<div class="topbar">
-  <button class="burger" onclick="toggleSidebar()" aria-label="選單">
-    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
-  </button>
-  <div class="brand">
-    <div class="mark"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2 3 14h7l-1 8 10-12h-7l1-8z"/></svg></div>
-    <div><h1>金門節能資訊平台</h1><div class="sub">KINMEN ENERGY SERVICES</div></div>
+<div class="top"><div class="wrap">
+  <a class="back" href="../">← 返回平台</a>
+  <h1>居家用電健檢</h1>
+</div></div>
+<div class="main">
+  <div class="lead">
+    <div class="mascot"><img src="data:image/jpeg;base64,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" alt="風獅爺"></div>
+    <h2>金門縣居家用電健檢</h2>
+    <p>由住商節電專案辦公室協助，找出家中用電問題，省電又安全。</p>
   </div>
-  <div class="spacer"></div>
-  <div class="demo-pill">住商節電專案辦公室</div>
-</div>
-
-<div class="app" id="app">
-
-  <!-- 側欄 -->
-  <aside class="sidebar">
-    <div class="grp">功能選單</div>
-    <nav class="nav">
-      <a class="active" href="#">
-        <span class="ic"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l9-8 9 8M5 10v10h14V10"/></svg></span>
-        <span class="lbl">首頁總覽</span></a>
-      <a href="./report/">
-        <span class="ic"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18h6M10 21h4M12 3a6 6 0 0 0-4 10.5c.8.7 1 1.2 1 2.5h6c0-1.3.2-1.8 1-2.5A6 6 0 0 0 12 3z"/></svg></span>
-        <span class="lbl">居家用電健檢報告</span></a>
-      <div class="navitem soon">
-        <span class="ic"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01"/></svg></span>
-        <span class="lbl">健檢名冊總覽</span><span class="tag">開發中</span></div>
-      <div class="navitem soon">
-        <span class="ic"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg></span>
-        <span class="lbl">節能成效儀表板</span><span class="tag">開發中</span></div>
-      <div class="grp">資訊</div>
-      <div class="navitem soon">
-        <span class="ic"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9M10 21h4"/></svg></span>
-        <span class="lbl">縣府公告</span></div>
-      <div class="navitem soon">
-        <span class="ic"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19 12a7 7 0 0 0-.1-1l2-1.5-2-3.5-2.4 1a7 7 0 0 0-1.7-1l-.3-2.5h-4l-.3 2.5a7 7 0 0 0-1.7 1l-2.4-1-2 3.5L4.1 11a7 7 0 0 0 0 2l-2 1.5 2 3.5 2.4-1a7 7 0 0 0 1.7 1l.3 2.5h4l.3-2.5a7 7 0 0 0 1.7-1l2.4 1 2-3.5-2-1.5a7 7 0 0 0 .1-1z"/></svg></span>
-        <span class="lbl">系統設定</span><span class="tag">規劃中</span></div>
-    </nav>
-  </aside>
-
-  <!-- 主內容 -->
-  <main class="content">
-
-    <!-- 地圖 -->
-    <section class="card mapcard">
-      <div class="hd"><h2>金門縣居家健檢分布圖</h2><div class="sub">點選鄉鎮查看，橘點為已健檢點位（目前為示範資料）</div></div>
-      <div class="body">
-        <div class="map-tools">
-          <label class="toggle"><input type="checkbox" id="showMarkers" checked onchange="toggleMarkers()"> 顯示已健檢點位</label>
-        </div>
-        <div class="map-wrap">
-          <div class="tooltip" id="tip"></div>
-          <svg class="kinmen" viewBox="-10 110 740 320" id="map">
-      <defs>
-        <linearGradient id="sea" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0" stop-color="#e4f3f4"/><stop offset="1" stop-color="#d3ebec"/>
-        </linearGradient>
-        <filter id="landShadow" x="-10%" y="-10%" width="120%" height="130%">
-          <feDropShadow dx="0" dy="4" stdDeviation="5" flood-color="#0a565e" flood-opacity="0.22"/>
-        </filter>
-      </defs>
-      <rect x="-10" y="110" width="740" height="320" rx="16" fill="#e4f3f4"/>
-      <g transform="translate(360,215) scale(0.88) translate(-360,-215)">
-<g opacity=".45" stroke="#c7e6e8" stroke-width="1.6" fill="none">
-        <path d="M40 470 q40 -12 80 0 t80 0 t80 0"/>
-        <path d="M470 70 q40 -12 80 0 t80 0"/>
-        <path d="M600 430 q30 -10 60 0 t60 0"/>
-      </g>
-      <g stroke-linejoin="round">
-      <path class="region" data-town="金寧鄉" fill="#5bbcc2" d="M 262.2,168.1 L 255.8,172.9 L 249.5,176.7 L 243.5,179.6 L 237.8,181.5 L 232.2,182.5 L 227.1,184.6 L 222.2,187.9 L 217.6,192.2 L 213.4,197.8 L 210.6,202.8 L 209.4,207.2 L 209.6,211.2 L 211.4,214.8 L 213.4,217.8 L 215.6,220.4 L 218.1,222.6 L 220.9,224.4 L 223.8,226.8 L 226.8,229.8 L 229.9,233.4 L 233.1,237.6 L 235.6,241.8 L 237.2,245.8 L 238.0,249.6 L 238.0,253.4 L 238.5,257.6 L 239.5,262.2 L 241.0,267.2 L 243.0,272.8 L 244.6,278.1 L 245.7,283.4 L 246.4,288.5 L 246.6,293.5 L 248.0,297.4 L 250.5,300.1 L 254.1,301.8 L 258.9,302.2 L 263.1,302.2 L 266.9,301.8 L 270.1,300.8 L 272.9,299.2 L 275.4,298.3 L 277.6,297.9 L 279.6,298.1 L 281.4,298.9 L 282.8,300.9 L 283.9,304.1 L 284.8,308.6 L 285.2,314.4 L 285.2,319.8 L 284.8,324.8 L 283.8,329.4 L 282.2,333.6 L 281.1,337.7 L 280.4,341.6 L 280.0,345.2 L 280.0,348.8 L 282.1,353.1 L 286.4,358.2 L 292.8,364.1 L 301.2,370.9 L 308.3,375.6 L 313.9,378.2 L 318.1,378.8 L 320.9,377.2 L 324.5,374.2 L 329.0,369.6 L 334.4,363.4 L 340.6,355.6 L 346.1,349.5 L 350.9,345.0 L 354.9,342.1 L 358.1,340.9 L 360.7,336.5 L 362.6,329.0 L 363.8,318.4 L 364.2,304.6 L 365.8,292.4 L 368.2,281.8 L 371.8,272.8 L 376.2,265.2 L 378.6,259.2 L 378.7,254.6 L 376.6,251.4 L 372.4,249.6 L 368.8,247.9 L 365.9,246.3 L 363.8,244.8 L 362.2,243.2 L 359.7,241.8 L 356.1,240.2 L 351.4,238.8 L 345.6,237.2 L 339.2,233.9 L 332.2,228.8 L 324.6,221.9 L 316.4,213.1 L 309.8,205.6 L 304.9,199.4 L 301.8,194.4 L 300.2,190.6 L 297.5,186.3 L 293.5,181.4 L 288.2,176.0 L 281.8,170.0 L 275.2,166.7 L 268.8,166.1 Z"/>
-      <path class="region" data-town="金沙鎮" fill="#a6c96a" d="M 497.8,108.1 L 498.2,112.9 L 498.4,116.8 L 498.3,119.8 L 497.9,121.9 L 497.1,123.1 L 494.1,124.8 L 488.9,126.9 L 481.4,129.5 L 471.6,132.5 L 464.3,135.9 L 459.4,139.8 L 457.0,144.1 L 457.0,148.9 L 457.9,152.5 L 459.8,155.0 L 462.6,156.4 L 466.4,156.6 L 469.4,157.5 L 471.6,159.0 L 473.1,161.1 L 473.9,163.9 L 473.9,166.4 L 473.1,168.6 L 471.6,170.6 L 469.4,172.4 L 467.3,173.6 L 465.4,174.2 L 463.8,174.2 L 462.2,173.8 L 460.9,172.9 L 459.6,171.8 L 458.5,170.4 L 457.5,168.6 L 456.3,167.3 L 454.9,166.4 L 453.4,166.0 L 451.6,166.0 L 450.2,166.2 L 449.2,166.8 L 448.6,167.5 L 448.4,168.5 L 448.6,169.8 L 449.2,171.2 L 450.2,173.0 L 451.8,175.0 L 452.7,177.1 L 453.1,179.4 L 452.9,181.8 L 452.1,184.2 L 450.6,186.4 L 448.4,188.1 L 445.4,189.5 L 441.6,190.5 L 438.4,191.9 L 435.6,193.6 L 433.4,195.8 L 431.6,198.2 L 429.8,200.4 L 427.9,202.1 L 426.0,203.5 L 424.0,204.5 L 422.9,207.0 L 422.8,211.0 L 423.6,216.5 L 425.4,223.5 L 426.0,229.4 L 425.5,234.1 L 423.9,237.8 L 421.1,240.2 L 419.0,242.6 L 417.5,244.7 L 416.6,246.6 L 416.4,248.4 L 416.4,250.0 L 416.6,251.5 L 417.1,252.9 L 417.9,254.1 L 419.6,255.5 L 422.2,257.0 L 425.8,258.6 L 430.2,260.4 L 435.6,261.9 L 441.9,263.1 L 449.0,264.1 L 457.0,264.9 L 464.0,265.2 L 470.0,265.2 L 475.0,264.9 L 479.0,264.1 L 483.5,262.7 L 488.5,260.6 L 494.0,257.8 L 500.0,254.2 L 504.9,251.8 L 508.6,250.2 L 511.2,249.8 L 512.8,250.2 L 514.1,251.0 L 515.4,252.0 L 516.5,253.2 L 517.5,254.8 L 519.8,256.3 L 523.2,257.9 L 528.0,259.6 L 534.0,261.4 L 539.1,264.1 L 543.4,267.7 L 546.8,272.2 L 549.2,277.8 L 551.9,282.4 L 554.6,286.3 L 557.5,289.4 L 560.5,291.6 L 563.6,294.4 L 566.7,297.6 L 569.9,301.4 L 573.1,305.6 L 576.0,309.0 L 578.5,311.5 L 580.6,313.1 L 582.4,313.9 L 584.4,314.4 L 586.6,314.6 L 589.1,314.6 L 591.9,314.4 L 594.7,313.6 L 597.6,312.4 L 600.5,310.6 L 603.5,308.4 L 605.4,304.0 L 606.1,297.5 L 605.8,288.9 L 604.2,278.1 L 604.1,268.2 L 605.2,259.2 L 607.6,251.1 L 611.4,243.9 L 613.9,238.2 L 615.3,234.2 L 615.5,231.9 L 614.5,231.1 L 612.9,230.6 L 610.6,230.2 L 607.8,230.0 L 604.2,230.0 L 601.1,229.4 L 598.2,228.1 L 595.6,226.2 L 593.4,223.8 L 591.8,220.6 L 590.8,216.7 L 590.4,212.1 L 590.6,206.9 L 590.2,202.1 L 589.2,197.7 L 587.6,193.8 L 585.4,190.2 L 583.7,186.9 L 582.6,183.8 L 582.0,180.9 L 582.0,178.1 L 582.5,175.1 L 583.5,171.7 L 585.0,168.0 L 587.0,164.0 L 588.2,160.8 L 588.8,158.4 L 588.5,156.9 L 587.5,156.1 L 586.3,155.8 L 584.9,155.8 L 583.4,156.1 L 581.6,156.9 L 579.8,157.2 L 577.9,157.2 L 576.0,156.9 L 574.0,156.1 L 572.1,155.7 L 570.4,155.6 L 568.8,155.8 L 567.2,156.2 L 564.7,156.1 L 561.1,155.2 L 556.4,153.6 L 550.6,151.4 L 546.0,149.2 L 542.5,147.2 L 540.1,145.4 L 538.9,143.6 L 538.2,141.1 L 538.1,137.7 L 538.5,133.5 L 539.5,128.5 L 540.0,123.8 L 540.0,119.2 L 539.5,115.0 L 538.5,111.0 L 537.1,107.8 L 535.4,105.2 L 533.2,103.5 L 530.8,102.5 L 527.0,101.8 L 522.0,101.2 L 515.8,101.0 L 508.2,101.0 L 502.8,102.2 L 499.2,104.6 Z"/>
-      <path class="region" data-town="金湖鎮" fill="#e6a45c" d="M 365.9,292.2 L 365.1,299.8 L 364.7,307.0 L 364.6,314.0 L 364.8,320.8 L 365.2,327.2 L 367.3,331.8 L 370.9,334.2 L 376.1,334.8 L 382.9,333.2 L 389.6,332.1 L 396.2,331.4 L 402.8,331.0 L 409.2,331.0 L 415.0,330.7 L 420.0,330.1 L 424.2,329.1 L 427.8,327.9 L 431.8,327.3 L 436.4,327.4 L 441.6,328.2 L 447.4,329.8 L 452.8,332.0 L 457.8,335.0 L 462.4,338.8 L 466.6,343.2 L 471.4,347.2 L 476.8,350.6 L 482.8,353.4 L 489.2,355.6 L 495.0,358.1 L 500.0,360.7 L 504.2,363.5 L 507.8,366.5 L 510.9,370.1 L 513.6,374.2 L 516.0,378.9 L 518.0,384.1 L 519.2,388.4 L 519.8,391.8 L 519.5,394.2 L 518.5,395.8 L 516.7,397.2 L 514.1,398.6 L 510.6,399.9 L 506.4,401.1 L 503.3,402.6 L 501.4,404.2 L 500.8,406.0 L 501.2,408.0 L 502.1,409.8 L 503.2,411.2 L 504.6,412.5 L 506.4,413.5 L 508.4,413.9 L 510.8,413.8 L 513.5,413.1 L 516.5,411.9 L 519.3,411.0 L 521.9,410.5 L 524.4,410.4 L 526.6,410.6 L 529.1,410.5 L 531.9,410.0 L 534.9,409.1 L 538.1,407.9 L 540.8,406.5 L 542.9,405.0 L 544.5,403.4 L 545.5,401.6 L 547.9,399.8 L 551.6,397.9 L 556.8,396.0 L 563.2,394.0 L 568.3,391.6 L 571.9,388.9 L 574.1,385.8 L 574.9,382.2 L 576.5,379.6 L 579.0,377.7 L 582.4,376.6 L 586.6,376.4 L 590.2,375.4 L 593.2,373.8 L 595.6,371.5 L 597.4,368.5 L 598.5,365.7 L 599.0,363.1 L 598.9,360.6 L 598.1,358.4 L 597.1,356.2 L 595.7,354.1 L 594.0,352.0 L 592.0,350.0 L 590.6,347.9 L 589.9,345.8 L 589.8,343.6 L 590.2,341.4 L 591.2,339.3 L 592.8,337.4 L 594.8,335.8 L 597.2,334.2 L 599.6,333.4 L 601.9,333.3 L 604.0,333.9 L 606.0,335.1 L 607.9,336.1 L 609.8,336.7 L 611.6,337.0 L 613.4,337.0 L 615.0,336.4 L 616.5,335.1 L 617.9,333.2 L 619.1,330.8 L 620.0,327.9 L 620.5,324.6 L 620.6,321.0 L 620.4,317.0 L 619.5,313.8 L 618.0,311.2 L 615.9,309.5 L 613.1,308.5 L 609.9,308.3 L 606.3,308.9 L 602.2,310.4 L 597.8,312.6 L 593.6,314.1 L 589.7,314.9 L 586.1,314.9 L 582.9,314.1 L 579.5,312.4 L 576.0,309.6 L 572.4,305.9 L 568.6,301.1 L 565.1,297.0 L 561.7,293.5 L 558.5,290.6 L 555.5,288.4 L 552.7,285.4 L 550.1,281.6 L 547.6,277.1 L 545.4,271.9 L 542.2,267.5 L 538.2,264.0 L 533.4,261.4 L 527.6,259.6 L 522.9,257.8 L 519.1,255.9 L 516.4,254.0 L 514.6,252.0 L 512.8,250.6 L 510.9,249.9 L 509.0,249.8 L 507.0,250.2 L 504.5,251.4 L 501.5,253.1 L 498.0,255.5 L 494.0,258.5 L 489.7,261.0 L 485.1,263.0 L 480.1,264.5 L 474.9,265.5 L 470.4,266.1 L 466.6,266.2 L 463.6,265.9 L 461.4,265.1 L 458.6,264.6 L 455.2,264.4 L 451.2,264.4 L 446.8,264.6 L 442.1,264.3 L 437.2,263.4 L 432.1,262.0 L 426.9,260.0 L 422.4,257.9 L 418.6,255.8 L 415.6,253.6 L 413.4,251.4 L 410.2,250.1 L 406.1,249.9 L 401.0,250.6 L 395.0,252.4 L 389.3,255.3 L 383.9,259.4 L 378.9,264.8 L 374.1,271.2 L 370.4,278.0 L 367.6,285.0 Z"/>
-      <path class="region" data-town="金城鎮" fill="#e59ab2" d="M 278.5,291.4 L 277.5,291.6 L 276.4,292.4 L 275.1,293.8 L 273.8,295.8 L 272.2,298.2 L 269.4,300.2 L 265.3,301.8 L 259.9,302.8 L 253.1,303.2 L 247.8,304.1 L 243.8,305.2 L 241.1,306.6 L 239.9,308.4 L 239.1,310.3 L 238.7,312.4 L 238.8,314.8 L 239.2,317.2 L 239.4,319.5 L 239.3,321.5 L 238.9,323.2 L 238.1,324.8 L 236.6,326.2 L 234.2,327.6 L 231.0,328.9 L 227.0,330.1 L 224.0,331.7 L 222.0,333.6 L 221.0,335.8 L 221.0,338.2 L 220.5,340.8 L 219.5,343.4 L 218.0,346.1 L 216.0,348.9 L 213.8,350.9 L 211.2,352.3 L 208.5,353.0 L 205.5,353.0 L 202.8,352.5 L 200.4,351.5 L 198.4,350.0 L 196.6,348.0 L 194.7,346.8 L 192.6,346.2 L 190.2,346.5 L 187.8,347.5 L 185.2,348.1 L 182.6,348.4 L 179.9,348.2 L 177.1,347.8 L 174.7,347.7 L 172.6,348.1 L 170.8,348.9 L 169.2,350.1 L 169.1,352.8 L 170.4,356.8 L 173.0,362.1 L 177.0,368.9 L 180.8,374.8 L 184.4,379.8 L 187.9,383.9 L 191.1,387.1 L 193.9,390.6 L 196.3,394.2 L 198.2,398.0 L 199.8,402.0 L 201.9,405.4 L 204.8,408.1 L 208.4,410.2 L 212.6,411.8 L 216.4,413.7 L 219.6,416.1 L 222.4,418.9 L 224.6,422.1 L 227.4,424.8 L 230.8,426.8 L 234.8,428.1 L 239.2,428.9 L 242.9,429.8 L 245.6,430.9 L 247.5,432.2 L 248.5,433.8 L 250.1,435.2 L 252.2,436.6 L 254.9,437.9 L 258.1,439.1 L 262.2,439.5 L 267.2,439.0 L 273.1,437.6 L 279.9,435.4 L 285.2,432.4 L 289.1,428.8 L 291.5,424.5 L 292.5,419.5 L 294.1,413.9 L 296.4,407.8 L 299.2,401.1 L 302.8,393.9 L 305.3,388.1 L 306.9,383.9 L 307.6,381.1 L 307.4,379.9 L 305.6,377.8 L 302.4,374.8 L 297.6,370.9 L 291.4,366.1 L 286.4,362.1 L 282.8,358.9 L 280.5,356.4 L 279.5,354.6 L 279.2,351.4 L 279.6,346.8 L 280.6,340.8 L 282.4,333.2 L 283.7,326.0 L 284.6,319.0 L 285.0,312.2 L 285.0,305.8 L 284.7,300.6 L 284.1,296.7 L 283.1,294.1 L 281.9,292.9 L 280.7,292.0 L 279.6,291.5 Z"/>
-      <path class="region" data-town="烈嶼鄉" fill="#ecd18a" d="M 155.9,272.4 L 151.1,268.6 L 146.5,264.5 L 142.0,260.0 L 137.6,255.1 L 133.4,249.9 L 129.5,245.9 L 126.0,243.1 L 122.9,241.6 L 120.1,241.4 L 116.9,241.8 L 113.3,242.9 L 109.2,244.8 L 104.8,247.2 L 100.2,249.0 L 95.8,250.0 L 91.2,250.2 L 86.8,249.8 L 82.6,250.2 L 78.7,251.6 L 75.1,253.9 L 71.9,257.1 L 69.1,261.7 L 66.9,267.6 L 65.1,274.8 L 63.9,283.2 L 62.1,290.6 L 59.9,296.9 L 57.1,302.0 L 53.9,306.0 L 50.9,309.2 L 48.3,311.6 L 46.0,313.1 L 44.0,313.9 L 41.6,313.8 L 38.7,312.8 L 35.4,310.9 L 31.6,308.1 L 28.4,306.1 L 25.6,304.9 L 23.4,304.4 L 21.6,304.6 L 20.2,305.2 L 19.2,306.2 L 18.6,307.6 L 18.4,309.4 L 18.8,311.6 L 19.9,314.2 L 21.8,317.2 L 24.2,320.8 L 26.0,323.9 L 27.0,326.8 L 27.2,329.4 L 26.8,331.6 L 26.0,333.4 L 25.0,334.8 L 23.8,335.8 L 22.2,336.2 L 21.1,336.9 L 20.2,337.8 L 19.6,338.9 L 19.4,340.1 L 20.2,341.4 L 22.2,342.6 L 25.4,343.9 L 29.6,345.1 L 33.2,346.8 L 36.2,348.8 L 38.6,351.1 L 40.4,353.9 L 42.4,356.2 L 44.6,358.1 L 47.1,359.5 L 49.9,360.5 L 52.2,361.2 L 54.2,361.6 L 55.9,361.6 L 57.1,361.4 L 58.6,360.2 L 60.4,358.2 L 62.4,355.4 L 64.6,351.6 L 67.2,348.4 L 70.1,345.8 L 73.2,343.8 L 76.8,342.2 L 79.8,341.2 L 82.2,340.8 L 84.2,340.8 L 85.8,341.2 L 87.1,342.1 L 88.4,343.2 L 89.5,344.6 L 90.5,346.4 L 91.9,347.6 L 93.8,348.2 L 96.1,348.2 L 98.9,347.8 L 101.2,347.1 L 103.2,346.4 L 104.9,345.5 L 106.1,344.5 L 107.0,343.1 L 107.5,341.2 L 107.6,338.9 L 107.4,336.1 L 107.6,333.6 L 108.4,331.2 L 109.6,329.0 L 111.4,327.0 L 113.4,325.3 L 115.6,323.9 L 118.1,322.9 L 120.9,322.1 L 124.1,321.8 L 127.7,321.9 L 131.8,322.5 L 136.2,323.5 L 140.2,323.4 L 143.6,322.3 L 146.4,320.1 L 148.6,316.9 L 150.3,313.8 L 151.4,310.9 L 152.0,308.2 L 152.0,305.8 L 152.5,303.1 L 153.5,300.4 L 155.0,297.5 L 157.0,294.5 L 158.7,291.5 L 160.1,288.5 L 161.1,285.5 L 161.9,282.5 L 161.2,279.3 L 159.2,275.9 Z"/>
-      </g>
-      <text class="region-label" x="297.2" y="271.6" font-size="18" text-anchor="middle">金寧</text>
-      <text class="region-label" x="520.5" y="213.9" font-size="18" text-anchor="middle">金沙</text>
-      <text class="region-label" x="492.6" y="322.7" font-size="18" text-anchor="middle">金湖</text>
-      <text class="region-label" x="247.2" y="378.4" font-size="18" text-anchor="middle">金城</text>
-      <text class="region-label" x="93.9" y="305.4" font-size="15" text-anchor="middle">烈嶼</text>
-      <!-- 烏坵 inset -->
-      <g transform="translate(600,120)">
-        <rect x="0" y="0" width="104" height="52" rx="9" fill="#fff" stroke="#d7e3e3"/>
-        <path d="M18 30 q6 -12 16 -8 q10 -8 16 2 q8 -2 8 8 q-4 8 -16 6 q-8 4 -16 -2 q-10 0 -8 -6z" fill="#a6c96a"/>
-        <text x="60" y="24" font-size="12" font-weight="800" fill="#5f6f6d">烏坵鄉</text>
-        <text x="60" y="39" font-size="9" fill="#9aa">位置示意</text>
-      </g>
-      <!-- 指北 -->
-      <g transform="translate(10,132)" opacity=".55">
-        <path d="M0,-16 L6,7 L0,1 L-6,7 Z" fill="#0a565e"/>
-        <text x="0" y="22" font-size="11" text-anchor="middle" fill="#0a565e" font-weight="800">N</text>
-      </g>
-      <g id="markers"></g>
-      </g>
-    </svg>
-        </div>
-
-        <div class="legend" id="legend"></div>
-
-        <div class="mapstats">
-          <div class="s"><div class="n" id="stTotal">—</div><div class="l">累計健檢戶數</div></div>
-          <div class="s"><div class="n" id="stWeek">—</div><div class="l">本週新增</div></div>
-          <div class="s"><div class="n" id="stTowns">—</div><div class="l">涵蓋鄉鎮</div></div>
-        </div>
-        <div class="notice" style="padding:0">＊統計與點位為示範資料，待接「結果」名冊後自動更新。</div>
-      </div>
-    </section>
-
-    <!-- 右欄 -->
-    <div class="rail">
-      <section class="card weather">
-        <div class="hd"><h2>金門今日天氣</h2><div class="sub" id="wxSub">資料載入中…</div></div>
-        <div class="body">
-          <div class="sun"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4 12H2M22 12h-2M5 5l1.5 1.5M17.5 17.5 19 19M19 5l-1.5 1.5M6.5 17.5 5 19"/></svg></div>
-          <div class="temp"><span id="wxTemp">—</span><span style="font-size:24px">°C</span></div>
-          <div class="cond" id="wxCond">載入中…</div>
-          <div class="meta">
-            <div><b id="wxFeels">—</b>體感</div><div><b id="wxPop">—</b>降雨</div><div><b id="wxHum">—</b>濕度</div><div><b id="wxWind">—</b>風速</div>
-          </div>
-          <div class="notice" id="wxNote">＊資料來源：中央氣象署開放資料。</div>
-        </div>
-      </section>
-
-      <section class="card news">
-        <div class="hd"><h2>縣府相關公告</h2><div class="sub">示範版位，待接縣府公告來源</div></div>
-        <div class="body" id="newsList"></div>
-        <div class="news more">查看更多公告 →</div>
-      </section>
+  <div class="cards">
+    <a class="entry fill" id="fillLink" href="#">
+      <div class="ic"><svg width="38" height="38" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16v16H4zM8 9h8M8 13h8M8 17h5"/><path d="M15 2l2 2-2 2"/></svg></div>
+      <h3>填寫健檢問卷</h3>
+      <p>健檢人員現場填寫。完成後系統會產生診斷報告。</p>
+      <span class="btn">前往填寫</span>
+    </a>
+    <div class="entry find" onclick="openLookup()" style="cursor:pointer">
+      <div class="ic"><svg width="38" height="38" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18h6M10 21h4M12 3a6 6 0 0 0-4 10.5c.8.7 1 1.2 1 2.5h6c0-1.3.2-1.8 1-2.5A6 6 0 0 0 12 3z"/></svg></div>
+      <h3>查詢我的報告</h3>
+      <p>已完成健檢者，輸入專屬鑰匙查看您的診斷報告。</p>
+      <span class="btn">查詢報告</span>
     </div>
-
-  </main>
+  </div>
+  <div class="lookup" id="lookup">
+    <h3>輸入報告鑰匙</h3>
+    <p>請輸入健檢人員提供給您的報告鑰匙（一串英數字），或直接開啟收到的報告連結。</p>
+    <div class="row">
+      <input id="tokenInput" placeholder="貼上報告鑰匙…" autocomplete="off">
+      <button onclick="goReport()">查看報告</button>
+    </div>
+    <div class="hint">找不到鑰匙？請洽住商節電專案辦公室　☎ 082-321635</div>
+  </div>
+  <div class="steps">
+    <h4>健檢流程</h4>
+    <ol>
+      <li>健檢人員到府，現場填寫健檢問卷並量測。</li>
+      <li>系統自動判讀，產生您家的專屬診斷報告。</li>
+      <li>您會收到報告連結（含專屬鑰匙），點開即可查看改善建議。</li>
+    </ol>
+  </div>
 </div>
-
+<div class="foot">住商節電專案辦公室　☎ 082-321635</div>
 <script>
-/* ── 側欄收合 ── */
-function toggleSidebar(){ document.getElementById('app').classList.toggle('collapsed'); }
+/* ═══════════════════════════════════════════════════
+   只需設定這一行：你的 Apps Script 網頁應用程式網址
+   （在 Apps Script 執行 getSurveyUrl() 可取得，以 /exec 結尾）
+   ═══════════════════════════════════════════════════ */
+const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwH976MlJsdmnY2toxw0-J7xKVz-xMwgZPZI858bhvgnh9qpZi9WzhoWXmf0MxGhLa2/exec";
 
-/* ── 鄉鎮資料（未來由名冊 API 帶入 count；目前示範）── */
-const TOWNS = [
-  {name:'金城鎮', color:'#e59ab2', count:42},
-  {name:'金寧鄉', color:'#5bbcc2', count:31},
-  {name:'金湖鎮', color:'#e6a45c', count:28},
-  {name:'金沙鎮', color:'#a6c96a', count:19},
-  {name:'烈嶼鄉', color:'#ecd18a', count:8},
-];
+/* 由上方網址自動推導兩個入口 */
+const FORM_URL   = APPS_SCRIPT_URL;                      // 健檢問卷（免登入）
+const REPORT_URL = APPS_SCRIPT_URL + "?page=report";     // 健診報告
 
-/* ── 已健檢點位（未來由 result 名冊帶入座標；目前示範）── */
-const POINTS = [
-  {town:'金城鎮', x:247.2, y:373.4},{town:'金城鎮', x:213.2, y:349.4},{town:'金城鎮', x:275.2, y:387.4},
-  {town:'金寧鄉', x:297.2, y:266.6},{town:'金寧鄉', x:327.2, y:240.60000000000002},
-  {town:'金湖鎮', x:492.6, y:317.7},{town:'金湖鎮', x:452.6, y:299.7},
-  {town:'金沙鎮', x:520.5, y:208.9},
-  {town:'烈嶼鄉', x:93.9, y:300.4}
-];
+const fl = document.getElementById('fillLink');
+if (APPS_SCRIPT_URL) { fl.href = FORM_URL; fl.target = "_blank"; }
+else { fl.href = "javascript:void(0)"; fl.onclick = ()=>alert('尚未設定問卷網址，請洽管理者。'); }
 
-/* 圖例 */
-document.getElementById('legend').innerHTML = TOWNS.map(t=>
-  `<div class="li"><span class="sw" style="background:${t.color}"></span>${t.name}　<b style="color:var(--ink-soft)">${t.count}戶</b></div>`
-).join('');
-
-/* 統計 */
-const total = TOWNS.reduce((a,t)=>a+t.count,0);
-document.getElementById('stTotal').textContent = total;
-document.getElementById('stWeek').textContent = 6;
-document.getElementById('stTowns').textContent = TOWNS.filter(t=>t.count>0).length + '/6';
-
-/* 點位渲染 */
-function renderMarkers(){
-  const g=document.getElementById('markers');
-  g.innerHTML = POINTS.map(p=>
-    `<circle class="marker-pulse" cx="${p.x}" cy="${p.y}" r="5"></circle>
-     <circle class="marker" cx="${p.x}" cy="${p.y}" r="4.5"></circle>`
-  ).join('');
+function openLookup(){
+  const el = document.getElementById('lookup');
+  el.classList.add('open');
+  el.scrollIntoView({behavior:'smooth', block:'center'});
+  document.getElementById('tokenInput').focus();
 }
-renderMarkers();
-function toggleMarkers(){
-  document.getElementById('markers').style.display =
-    document.getElementById('showMarkers').checked ? '' : 'none';
+function goReport(){
+  const t = document.getElementById('tokenInput').value.trim();
+  if(!t){ alert('請輸入報告鑰匙'); return; }
+  const sep = REPORT_URL.indexOf('?') > -1 ? '&' : '?';
+  window.open(REPORT_URL + sep + 'token=' + encodeURIComponent(t), '_blank');
 }
-
-/* 鄉鎮 hover tooltip */
-const tip=document.getElementById('tip'), wrap=document.querySelector('.map-wrap');
-document.querySelectorAll('.region').forEach(r=>{
-  r.addEventListener('mousemove', ev=>{
-    const town=r.dataset.town;
-    const t=TOWNS.find(x=>x.name===town);
-    tip.innerHTML = town + (t?`　已健檢 ${t.count} 戶`:'');
-    const rect=wrap.getBoundingClientRect();
-    tip.style.left=(ev.clientX-rect.left)+'px';
-    tip.style.top=(ev.clientY-rect.top)+'px';
-    tip.style.opacity=1;
-  });
-  r.addEventListener('mouseleave', ()=> tip.style.opacity=0);
-});
-
-/* 公告示範 */
-const NEWS=[
-  {d:'27',m:'7月',t:'115年度住商節電輔導開始受理報名'},
-  {d:'22',m:'7月',t:'金門縣居家用電健檢服務擴大辦理'},
-  {d:'15',m:'7月',t:'節能家電汰換補助說明會通知'},
-  {d:'08',m:'7月',t:'夏季用電高峰節電宣導活動'},
-];
-document.getElementById('newsList').innerHTML = NEWS.map(n=>
-  `<a class="item" href="#"><div class="date"><b>${n.d}</b>${n.m}</div><div class="txt">${n.t}</div></a>`
-).join('');
-
-/* ── 即時天氣（透過 Apps Script 天氣端點，JSONP）── */
-const WEATHER_API = "https://script.google.com/macros/s/AKfycbwH976MlJsdmnY2toxw0-J7xKVz-xMwgZPZI858bhvgnh9qpZi9WzhoWXmf0MxGhLa2/exec";
-function setWx(id,v,suffix){ const el=document.getElementById(id); if(el) el.textContent=(v==null||v==='—')?'—':v+(suffix||''); }
-window.__onWeather=function(w){
-  if(!w||w.error){ document.getElementById('wxSub').textContent='天氣暫時無法取得';
-    if(w&&w.error) document.getElementById('wxNote').textContent='＊'+w.error; return; }
-  setWx('wxTemp', w.temp);
-  document.getElementById('wxCond').textContent = w.condition||'—';
-  setWx('wxFeels', w.feels, '°');
-  setWx('wxPop', w.pop, '%');
-  setWx('wxHum', w.humidity, '%');
-  setWx('wxWind', w.wind);
-  const time = (w.time||'').replace('T',' ').slice(0,16);
-  document.getElementById('wxSub').textContent = (w.town||'金門') + (time?' · '+time:'');
-};
-(function loadWeather(){
-  if(!WEATHER_API){ document.getElementById('wxSub').textContent='未設定天氣來源'; return; }
-  const s=document.createElement('script');
-  s.src=WEATHER_API+(WEATHER_API.indexOf('?')>-1?'&':'?')+'weather=1&callback=__onWeather';
-  s.onerror=()=>{ document.getElementById('wxSub').textContent='天氣連線失敗'; };
-  document.body.appendChild(s);
-})();
+document.getElementById('tokenInput').addEventListener('keydown', e=>{ if(e.key==='Enter') goReport(); });
 </script>
 </body>
 </html>
